@@ -1,7 +1,9 @@
-import Schema.GameType;
-import Schema.Generated.GameDescriptor;
-import Schema.Generated.Slice;
-import Schema.Generated.Slices;
+package GameXmlParser;
+
+import GameXmlParser.Schema.GameType;
+import GameXmlParser.Schema.Generated.GameDescriptor;
+import GameXmlParser.Schema.Generated.Slice;
+import GameXmlParser.Schema.Generated.Slices;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -13,11 +15,11 @@ import java.util.List;
  * Created by ido on 13/08/2016.
  */
 public class GameBoardXmlParser {
-    private final String illegalXmlFileMessage = "Game Definition Xml File is illegal";
+    private final String illegalXmlFileMessage = "Game.Game Definition Xml File is illegal";
     private final String sliceIsDefinedMoreThenOneTime = "Slice with orientation {} and index {} is defined more then one time";
     private final String sliceIsDefinedWithIllegalId = "Slice with orientation {} and index {} exceeds the maximum index  of {}";
     private final String unknownSliceOrentation = "Unknown slice orientation  of {} is defined";
-    private final String invalidGameTypeMessage = "Defined Game type of {} is not a valid Game Type";
+    private final String invalidGameTypeMessage = "Defined Game.Game type of {} is not a valid Game.Game Type";
     private final String orientationRow = "row";
     private final String orientationColumn = "column";
     private final int minIndexValue = 1;
@@ -68,7 +70,7 @@ public class GameBoardXmlParser {
         if (isvalidRange(currentSliceIndex, maxIndexValue)) {
             if (!isOrientationDefined[currentSliceIndex] || isOrientationDefined[currentSliceIndex] == null) {
                 isOrientationDefined[currentSliceIndex] = true;
-                slice.getBlocks() // TODO handle Blocks
+                // slice.getBlocks() // TODO handle Blocks
             } else {
                 throw new GameDefinitionsXmlParserExeption(String.format(sliceIsDefinedMoreThenOneTime, slice.getOrientation(), currentSliceIndex));
             }

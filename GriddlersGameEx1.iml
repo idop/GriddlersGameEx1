@@ -7,6 +7,8 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module" module-name="GameDefinitionsXmlParser" exported="" />
+    <orderEntry type="module" module-name="GameLogic" exported="" />
+    <orderEntry type="module" module-name="Program" exported="" />
   </component>
 </module>
-

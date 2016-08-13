@@ -1,3 +1,5 @@
+package Game;
+
 /**
  * Created by ido on 13/08/2016.
  */

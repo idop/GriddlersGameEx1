@@ -1,5 +1,5 @@
 
-package Schema.Generated;
+package GameXmlParser.Schema.Generated;
 
 import javax.xml.bind.annotation.*;
 import java.math.BigInteger;
@@ -15,9 +15,16 @@ import java.math.BigInteger;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element ref="{}Name"/>
- *         &lt;element ref="{}PlayerType"/>
+ *         &lt;element ref="{}Blocks"/>
  *       &lt;/sequence>
+ *       &lt;attribute name="orientation" use="required">
+ *         &lt;simpleType>
+ *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
+ *             &lt;enumeration value="column"/>
+ *             &lt;enumeration value="row"/>
+ *           &lt;/restriction>
+ *         &lt;/simpleType>
+ *       &lt;/attribute>
  *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -26,58 +33,57 @@ import java.math.BigInteger;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-        "name",
-        "playerType"
+        "blocks"
 })
-@XmlRootElement(name = "player")
-public class Player {
+@XmlRootElement(name = "Slice")
+public class Slice {
 
-    @XmlElement(name = "Name", required = true)
-    protected String name;
-    @XmlElement(name = "PlayerType", required = true)
-    protected String playerType;
+    @XmlElement(name = "Blocks", required = true)
+    protected String blocks;
+    @XmlAttribute(name = "orientation", required = true)
+    protected String orientation;
     @XmlAttribute(name = "id", required = true)
     @XmlSchemaType(name = "positiveInteger")
     protected BigInteger id;
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the blocks property.
      *
      * @return possible object is
      * {@link String }
      */
-    public String getName() {
-        return name;
+    public String getBlocks() {
+        return blocks;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the blocks property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setName(String value) {
-        this.name = value;
+    public void setBlocks(String value) {
+        this.blocks = value;
     }
 
     /**
-     * Gets the value of the playerType property.
+     * Gets the value of the orientation property.
      *
      * @return possible object is
      * {@link String }
      */
-    public String getPlayerType() {
-        return playerType;
+    public String getOrientation() {
+        return orientation;
     }
 
     /**
-     * Sets the value of the playerType property.
+     * Sets the value of the orientation property.
      *
      * @param value allowed object is
      *              {@link String }
      */
-    public void setPlayerType(String value) {
-        this.playerType = value;
+    public void setOrientation(String value) {
+        this.orientation = value;
     }
 
     /**

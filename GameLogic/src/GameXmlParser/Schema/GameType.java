@@ -1,4 +1,4 @@
-package Schema;
+package GameXmlParser.Schema;
 
 /**
  * Created by ido on 13/08/2016.

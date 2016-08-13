@@ -1,5 +1,5 @@
 
-package Schema.Generated;
+package GameXmlParser.Schema.Generated;
 
 import javax.xml.bind.annotation.*;
 import java.math.BigInteger;
