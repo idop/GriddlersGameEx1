@@ -1,5 +1,6 @@
 package GameXmlParser;
 
+import GameXmlParser.Schema.Constraint;
 import GameXmlParser.Schema.Constraints;
 import GameXmlParser.Schema.GameType;
 import GameXmlParser.Schema.Generated.GameDescriptor;
@@ -17,13 +18,15 @@ import java.util.List;
  */
 public class GameBoardXmlParser {
     private final String illegalXmlFileMessage = "Game.Game Definition Xml File is illegal";
-    private final String sliceIsDefinedMoreThenOneTime = "Slice with orientation {} and index {} is defined more then one time";
-    private final String sliceIsDefinedWithIllegalId = "Slice with orientation {} and index {} exceeds the maximum index  of {}";
-    private final String unknownSliceOrentation = "Unknown slice orientation  of {} is defined";
-    private final String invalidGameTypeMessage = "Defined Game type of {} is not a valid Game Type";
-    private final String invalidBlocksDefinition = "Invalid Blocks Definition at Slice with orientation {} and index {}";
+    private final String sliceIsDefinedMoreThenOneTime = "Slice with orientation %s and index %d is defined more then one time";
+    private final String sliceIsDefinedWithIllegalId = "Slice with orientation %s and index %d exceeds the maximum index  of %d";
+    private final String unknownSliceOrentation = "Unknown slice orientation of %s is defined";
+    private final String invalidGameTypeMessage = "Defined Game type of %s is not a valid Game Type";
+    private final String invalidBlocksDefinition = "Invalid Blocks Definition at Slice with orientation %s and index %d";
     private final String invalidSlicesDefinition = "Invalid slices definition";
     private final String invalidSliceDefinition = "Invalid slice definition";
+    private final String NumberDefinitionExceedsMaximum = "The sum the number constraints inside the Slice with orientation %s  and index %d exceeds the maximum allowed Of %d ";
+    private final String invalidNumberFormatDefinition = "Invalid Number Definition inside a Slice with orientation %s and index %d ";
     private final String orientationRow = "row";
     private final String orientationColumn = "column";
     private final int minIndexValue = 1;
@@ -31,7 +34,7 @@ public class GameBoardXmlParser {
     private File gameDefinitionsXmlFile;
     private GameType gametype;
     private List<Constraints> rowSlices;
-    private List<Constraints> ColumnSlices;
+    private List<Constraints> columnSlices;
     private int rows;
     private int columns;
 
@@ -82,7 +85,7 @@ public class GameBoardXmlParser {
     }
 
     private void extractBlocksFromSlice(Boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserExeption {
-        if (isvalidRange(currentSliceIndex, maxIndexValue)) {
+        if (isValidRange(currentSliceIndex, maxIndexValue)) {
             if (!isOrientationDefined[currentSliceIndex] || isOrientationDefined[currentSliceIndex] == null) {
                 isOrientationDefined[currentSliceIndex] = true;
                 setConstraints(slice);
@@ -97,28 +100,48 @@ public class GameBoardXmlParser {
     private void setConstraints(Slice slice) throws GameDefinitionsXmlParserExeption {
         String blocks = slice.getBlocks();
         String parts[];
-        String Regex = "\s*,\s*";
+        String Regex = "\\s\t*,\\s\t*";
         if (blocks != null) {
-            if (slice.getOrientation().equals(orientationRow)) {
-                parts = blocks.split(Regex);
-            } else {
+            parts = blocks.split(Regex);
+            Constraints constraints = new Constraints(parts.length);
+            int sum = 0;
+            for (String part : parts) {
+                try {
+                    int currentInt = Integer.parseInt(part);
+                    sum += currentInt;
+                    constraints.addConstraint(new Constraint(currentInt));
+                } catch (NumberFormatException e) {
+                    throw new GameDefinitionsXmlParserExeption(String.format(invalidNumberFormatDefinition, slice.getOrientation(), slice.getId()), e);
+                }
 
+            }
+            if (slice.getOrientation().equals(orientationRow)) {
+                if ((sum + parts.length - 1) > columns) {
+                    throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), columns));
+                } else {
+                    rowSlices.add(constraints);
+                }
+            } else {
+                if ((sum + parts.length - 1) > rows) {
+                    throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), rows));
+                } else {
+                    columnSlices.add(constraints);
+                }
             }
         } else {
             throw new GameDefinitionsXmlParserExeption(String.format(invalidBlocksDefinition, slice.getOrientation(), slice.getId()));
         }
     }
 
-    private boolean isvalidRange(int currentSliceId, int maxIndexValue) {
+    private boolean isValidRange(int currentSliceId, int maxIndexValue) {
         return (currentSliceId >= minIndexValue && currentSliceId <= maxIndexValue);
     }
 
     private void extractGameType() throws GameDefinitionsXmlParserExeption {
-
-        gametype = GameType.valueOf(gameDescriptor.getGameType());
-
-        if (gametype == null) {
-            throw new GameDefinitionsXmlParserExeption(String.format(invalidGameTypeMessage, gameDescriptor.getGameType()));
+        try {
+            gametype = GameType.valueOf(gameDescriptor.getGameType());
+        } catch (Exception e) {
+            throw new GameDefinitionsXmlParserExeption(String.format(invalidGameTypeMessage, gameDescriptor.getGameType()), e);
         }
     }
 
