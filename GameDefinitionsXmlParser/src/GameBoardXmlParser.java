@@ -49,8 +49,8 @@ public class GameBoardXmlParser {
 
     private void extractSlices() throws GameDefinitionsXmlParserExeption {
         Slices slices = gameDescriptor.getBoard().getDefinition().getSlices();
-        boolean[] isRowDefined = new boolean[rows];
-        boolean[] isColumnDefined = new boolean[columns];
+        Boolean[] isRowDefined = new Boolean[rows];
+        Boolean[] isColumnDefined = new Boolean[columns];
         for (Slice slice : slices.getSlice()) {
             String currentSliceOrientation = slice.getOrientation();
             int currentSliceIndex = slice.getId().intValue();
@@ -64,11 +64,11 @@ public class GameBoardXmlParser {
         }
     }
 
-    private void extractBlocksFromSlice(boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserExeption {
-        if (isvalidRange(currentSliceIndex, rows)) {
-            if (!isOrientationDefined[currentSliceIndex]) {
+    private void extractBlocksFromSlice(Boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserExeption {
+        if (isvalidRange(currentSliceIndex, maxIndexValue)) {
+            if (!isOrientationDefined[currentSliceIndex] || isOrientationDefined[currentSliceIndex] == null) {
                 isOrientationDefined[currentSliceIndex] = true;
-                slice.getBlocks() // TODO handle BLocks
+                slice.getBlocks() // TODO handle Blocks
             } else {
                 throw new GameDefinitionsXmlParserExeption(String.format(sliceIsDefinedMoreThenOneTime, slice.getOrientation(), currentSliceIndex));
             }

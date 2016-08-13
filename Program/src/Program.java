@@ -9,8 +9,10 @@ public class Program {
     }
 
     private static void doSomething() {
-        boolean[] isRowDefined = new boolean[15];
+        Boolean[] isRowDefined = new Boolean[15];
         for (int i = 0; i < isRowDefined.length; i++) {
+            System.out.println(isRowDefined[i]);
+            isRowDefined[i] = true;
             System.out.println(isRowDefined[i]);
         }
     }
