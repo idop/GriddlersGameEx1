@@ -1,11 +1,10 @@
 package GameXmlParser;
 
+import Game.SolutionBoard;
 import GameXmlParser.Schema.Constraint;
 import GameXmlParser.Schema.Constraints;
 import GameXmlParser.Schema.GameType;
-import GameXmlParser.Schema.Generated.GameDescriptor;
-import GameXmlParser.Schema.Generated.Slice;
-import GameXmlParser.Schema.Generated.Slices;
+import GameXmlParser.Schema.Generated.*;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -27,12 +26,15 @@ public class GameBoardXmlParser {
     private final String invalidSliceDefinition = "Invalid slice definition";
     private final String NumberDefinitionExceedsMaximum = "The sum the number constraints inside the Slice with orientation %s  and index %d exceeds the maximum allowed Of %d ";
     private final String invalidNumberFormatDefinition = "Invalid Number Definition inside a Slice with orientation %s and index %d ";
+    private final String solutionIsNotDefined = "Solution is not defined in the provided xml file";
+    private final String squareIsNotDefined = "a square is not defined correctly in the provided xml file";
     private final String orientationRow = "row";
     private final String orientationColumn = "column";
     private final int minIndexValue = 1;
     private GameDescriptor gameDescriptor;
     private File gameDefinitionsXmlFile;
     private GameType gametype;
+    private SolutionBoard solutionBoard;
 
     public List<Constraints> getRowConstraints() {
         return rowConstraints;
@@ -51,7 +53,6 @@ public class GameBoardXmlParser {
     public GameBoardXmlParser(String gameDefinitionsXmlFileName) throws GameDefinitionsXmlParserExeption {
         gameDefinitionsXmlFile = new File(gameDefinitionsXmlFileName);
         parseXml();
-
     }
 
     private void parseXml() throws GameDefinitionsXmlParserExeption {
@@ -59,6 +60,29 @@ public class GameBoardXmlParser {
         extractGameType();
         extractBoardDimensions();
         extractSlices();
+        extractSolutionBoard();
+    }
+
+    private void extractSolutionBoard() throws GameDefinitionsXmlParserExeption {
+        Solution solution = gameDescriptor.getBoard().getSolution();
+        if (solution != null) {
+            solutionBoard = new SolutionBoard(rows, columns);
+            for (Square square : solution.getSquare()) {
+                if (square != null) {
+                    int row = square.getRow().intValue();
+                    int column = square.getColumn().intValue();
+                    if (isValidRange(row, rows) && isValidRange(column, columns)) {
+                        solutionBoard.setBoardSquareAsBlack(row - minIndexValue, column - minIndexValue);
+                    } else {
+                        throw new GameDefinitionsXmlParserExeption(squareIsNotDefined);
+                    }
+                } else {
+                    throw new GameDefinitionsXmlParserExeption(squareIsNotDefined);
+                }
+            }
+        } else {
+            throw new GameDefinitionsXmlParserExeption(solutionIsNotDefined);
+        }
     }
 
     private void extractBoardDimensions() {
@@ -174,5 +198,9 @@ public class GameBoardXmlParser {
 
     public int getColumns() {
         return columns;
+    }
+
+    public SolutionBoard getSolutionBoard() {
+        return solutionBoard;
     }
 }

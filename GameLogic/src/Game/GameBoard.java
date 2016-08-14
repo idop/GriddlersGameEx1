@@ -5,6 +5,7 @@ package Game;
  */
 public class GameBoard {
 
+
     private BoardSquare[][] board;
     private int rows;
     private int columns;
@@ -22,5 +23,9 @@ public class GameBoard {
                 board[i][j] = BoardSquare.Empty;
             }
         }
+    }
+
+    public BoardSquare[][] getBoard() {
+        return board.clone();
     }
 }
