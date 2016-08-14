@@ -33,8 +33,17 @@ public class GameBoardXmlParser {
     private GameDescriptor gameDescriptor;
     private File gameDefinitionsXmlFile;
     private GameType gametype;
-    private List<Constraints> rowSlices;
-    private List<Constraints> columnSlices;
+
+    public List<Constraints> getRowConstraints() {
+        return rowConstraints;
+    }
+
+    public List<Constraints> getColumnConstraints() {
+        return columnConstraints;
+    }
+
+    private List<Constraints> rowConstraints;
+    private List<Constraints> columnConstraints;
     private int rows;
     private int columns;
 
@@ -119,13 +128,13 @@ public class GameBoardXmlParser {
                 if ((sum + parts.length - 1) > columns) {
                     throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), columns));
                 } else {
-                    rowSlices.add(constraints);
+                    rowConstraints.add(constraints);
                 }
             } else {
                 if ((sum + parts.length - 1) > rows) {
                     throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), rows));
                 } else {
-                    columnSlices.add(constraints);
+                    columnConstraints.add(constraints);
                 }
             }
         } else {

@@ -14,9 +14,11 @@ public class Game {
     private GameType gameType;
     List<Constraints> rowConstraints;
     List<Constraints> columnConstraints;
+
     public Game(GameBoardXmlParser gameBoardXmlParser) {
         gameType = gameBoardXmlParser.getGameType();
         gameBoard = new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns());
-
+        rowConstraints = gameBoardXmlParser.getRowConstraints();
+        columnConstraints = gameBoardXmlParser.getColumnConstraints();
     }
 }
