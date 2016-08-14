@@ -21,7 +21,7 @@ public class Constraints {
         return constraints.get(index);
     }
 
-    public void setConstraint(int index, Constraint constraint) {
-        constraints.set(index, constraint);
+    public void addConstraint(Constraint constraint) {
+        constraints.add(constraint);
     }
 }
