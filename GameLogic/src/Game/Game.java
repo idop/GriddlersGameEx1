@@ -4,6 +4,7 @@ import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraints;
 import GameXmlParser.Schema.GameType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,9 +13,9 @@ import java.util.List;
 public class Game {
 
     private final GameType gameType;
-    private GameBoard gameBoard;
-    private List<Constraints> rowConstraints;
-    private List<Constraints> columnConstraints;
+    public GameBoard gameBoard;
+    public List<Constraints> rowConstraints;
+    public List<Constraints> columnConstraints;
     private SolutionBoard solutionBoard;
 
     public GameType getGameType() {
@@ -39,5 +40,19 @@ public class Game {
         rowConstraints = gameBoardXmlParser.getRowConstraints();
         columnConstraints = gameBoardXmlParser.getColumnConstraints();
         solutionBoard = gameBoardXmlParser.getSolutionBoard();
+    }
+
+
+
+    public int getMaxColConstraints()
+    {
+        int max = 0;
+        /*
+        for (int i=0; i < gameBoard.getCols(); i++)
+        {
+
+        }
+        */
+        return max;
     }
 }
