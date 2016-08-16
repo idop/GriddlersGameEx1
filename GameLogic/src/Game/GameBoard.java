@@ -25,6 +25,16 @@ public class GameBoard {
         }
     }
 
+    public int getRows()
+    {
+        return rows;
+    }
+
+    public int getColumns()
+    {
+        return columns;
+    }
+
     public BoardSquare[][] getBoard() {
         return board.clone();
     }
