@@ -1,11 +1,12 @@
 /* Created by Amitai Handler on 8/14/16. */
-
 import java.util.Scanner;
+import GameXmlParser.*;
 
 public class MainMenu {
-    private static void draw()
+    private void draw()
     {
         Scanner in = new Scanner(System.in);
+        GameBoardXmlParser parser = null;
 
         int selection;
 
@@ -24,8 +25,11 @@ public class MainMenu {
             switch(selection)
             {
                 case 1:
+                    parser = this.getParser();
                     break;
                 case 2:
+                    if(parser != null) {}
+                    else System.out.println("Please provide configuration first (option [1] in menu).");
                     break;
                 case 3:
                     break;
@@ -37,8 +41,6 @@ public class MainMenu {
                     break;
                 case 7:
                     break;
-                case 8:
-                    break;
                 default:
                     break;
             }
@@ -46,12 +48,29 @@ public class MainMenu {
         }while (selection != 8);
     }
 
+    public GameBoardXmlParser getParser()
+    {
+        try
+        {
+            String path = UserInputs.getPath();
+            System.out.println(path);
+            GameBoardXmlParser parser = new GameBoardXmlParser(path);
+            System.out.println("it works. hurray!");
+            return parser;
+        }
+        catch (Exception ex)
+        {
+            System.err.println(ex.getMessage());
+            return null;
+        }
+    }
 
     public static void main(String[] args)
     {
         System.out.println("Welcome to the Griddler!");
         System.out.println("------------------------");
-        draw();
+        MainMenu mainMenu = new MainMenu();
+        mainMenu.draw();
     }
 
 }
