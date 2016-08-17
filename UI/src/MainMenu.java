@@ -60,7 +60,7 @@ public class MainMenu {
         }
         catch (Exception ex)
         {
-            System.err.println(ex.getMessage());
+            System.out.println(ex.getMessage());
             return null;
         }
     }
