@@ -47,12 +47,28 @@ public class Game {
     public int getMaxColConstraints()
     {
         int max = 0;
-        /*
-        for (int i=0; i < gameBoard.getCols(); i++)
+        for (int i=0; i < gameBoard.getColumns(); i++)
         {
-
+            int currentListSize = columnConstraints.get(i).getConstraintsList().size();
+            if (currentListSize > max)
+            {
+                max = currentListSize;
+            }
         }
-        */
+        return max;
+    }
+
+    public int getMaxRowConstraints()
+    {
+        int max = 0;
+        for (int i=0; i < gameBoard.getColumns(); i++)
+        {
+            int currentListSize = rowConstraints.get(i).getConstraintsList().size();
+            if (currentListSize > max)
+            {
+                max = currentListSize;
+            }
+        }
         return max;
     }
 }
