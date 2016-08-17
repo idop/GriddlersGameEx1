@@ -11,8 +11,9 @@ public class GameView
 
     public GameView(Game gGame)
     {
-        //this.rows = gGame.gameBoard.getRows() + gGame.rowConstraints.
-
+        //*2 to leave space between constraints
+        this.rows       = gGame.gameBoard.getRows() + gGame.getMaxRowConstraints()*2;
+        this.columns    = gGame.gameBoard.getColumns() + gGame.getMaxColConstraints()*2;
     }
 
     public void printGameBoardView()
