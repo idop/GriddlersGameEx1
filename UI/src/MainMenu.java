@@ -1,6 +1,8 @@
 /* Created by Amitai Handler on 8/14/16. */
+
+import GameXmlParser.GameBoardXmlParser;
+
 import java.util.Scanner;
-import GameXmlParser.*;
 
 public class MainMenu {
     private void draw()
