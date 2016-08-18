@@ -3,8 +3,7 @@ package Game;
 /**
  * Created by amitaihandler on 8/18/16.
  */
-public class GameMove
-{
+public class GameMove {
     private int row;
     private int column;
     private BoardSquare newBoardSquare;
@@ -51,5 +50,11 @@ public class GameMove
 
     public void setPreviousBoardSquare(BoardSquare previousBoardSquare) {
         this.previousBoardSquare = previousBoardSquare;
+    }
+
+    public void undo() {
+        BoardSquare tempBoardSquare = newBoardSquare;
+        newBoardSquare = previousBoardSquare;
+        previousBoardSquare = tempBoardSquare;
     }
 }

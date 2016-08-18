@@ -57,12 +57,12 @@ public class GameBoardXmlParser {
     private int columns;
 
 
-    public GameBoardXmlParser(String gameDefinitionsXmlFileName) throws GameDefinitionsXmlParserExeption {
+    public GameBoardXmlParser(String gameDefinitionsXmlFileName) throws GameDefinitionsXmlParserException {
         gameDefinitionsXmlFile = new File(gameDefinitionsXmlFileName);
         parseXml();
     }
 
-    private void parseXml() throws GameDefinitionsXmlParserExeption {
+    private void parseXml() throws GameDefinitionsXmlParserException {
         parseGameDescriptor();
         extractGameType();
         extractBoardDimensions();
@@ -70,7 +70,7 @@ public class GameBoardXmlParser {
         extractSolutionBoard();
     }
 
-    private void extractSolutionBoard() throws GameDefinitionsXmlParserExeption {
+    private void extractSolutionBoard() throws GameDefinitionsXmlParserException {
         Solution solution = gameDescriptor.getBoard().getSolution();
         if (solution != null) {
             solutionBoard = new SolutionBoard(rows, columns);
@@ -81,14 +81,14 @@ public class GameBoardXmlParser {
                     if (isValidRange(row, rows) && isValidRange(column, columns)) {
                         solutionBoard.setBoardSquareAsBlack(row, column);
                     } else {
-                        throw new GameDefinitionsXmlParserExeption(squareIsNotDefined);
+                        throw new GameDefinitionsXmlParserException(squareIsNotDefined);
                     }
                 } else {
-                    throw new GameDefinitionsXmlParserExeption(squareIsNotDefined);
+                    throw new GameDefinitionsXmlParserException(squareIsNotDefined);
                 }
             }
         } else {
-            throw new GameDefinitionsXmlParserExeption(solutionIsNotDefined);
+            throw new GameDefinitionsXmlParserException(solutionIsNotDefined);
         }
     }
 
@@ -97,7 +97,7 @@ public class GameBoardXmlParser {
         columns = gameDescriptor.getBoard().getDefinition().getColumns().intValue();
     }
 
-    private void extractSlices() throws GameDefinitionsXmlParserExeption {
+    private void extractSlices() throws GameDefinitionsXmlParserException {
         Slices slices = gameDescriptor.getBoard().getDefinition().getSlices();
         boolean[] isRowDefined = new boolean[rows];
         boolean[] isColumnDefined = new boolean[columns];
@@ -115,31 +115,31 @@ public class GameBoardXmlParser {
                             extractBlocksFromSlice(isColumnDefined, slice, currentSliceIndex, columns);
                             break;
                         default:
-                            throw new GameDefinitionsXmlParserExeption(String.format(unknownSliceOrentation, slice.getOrientation()));
+                            throw new GameDefinitionsXmlParserException(String.format(unknownSliceOrentation, slice.getOrientation()));
                     }
                 } else {
-                    throw new GameDefinitionsXmlParserExeption(invalidSliceDefinition);
+                    throw new GameDefinitionsXmlParserException(invalidSliceDefinition);
                 }
             }
         } else {
-            throw new GameDefinitionsXmlParserExeption(invalidSlicesDefinition);
+            throw new GameDefinitionsXmlParserException(invalidSlicesDefinition);
         }
     }
 
-    private void extractBlocksFromSlice(boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserExeption {
+    private void extractBlocksFromSlice(boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserException {
         if (isValidRange(currentSliceIndex, maxIndexValue)) {
             if (!isOrientationDefined[currentSliceIndex]) {
                 isOrientationDefined[currentSliceIndex] = true;
                 setConstraints(currentSliceIndex, slice);
             } else {
-                throw new GameDefinitionsXmlParserExeption(String.format(sliceIsDefinedMoreThenOneTime, slice.getOrientation(), currentSliceIndex));
+                throw new GameDefinitionsXmlParserException(String.format(sliceIsDefinedMoreThenOneTime, slice.getOrientation(), currentSliceIndex));
             }
         } else {
-            throw new GameDefinitionsXmlParserExeption(String.format(sliceIsDefinedWithIllegalId, slice.getOrientation(), currentSliceIndex, maxIndexValue));
+            throw new GameDefinitionsXmlParserException(String.format(sliceIsDefinedWithIllegalId, slice.getOrientation(), currentSliceIndex, maxIndexValue));
         }
     }
 
-    private void setConstraints(int index, Slice slice) throws GameDefinitionsXmlParserExeption {
+    private void setConstraints(int index, Slice slice) throws GameDefinitionsXmlParserException {
         String blocks = slice.getBlocks();
         String parts[];
         if (blocks != null) {
@@ -152,25 +152,25 @@ public class GameBoardXmlParser {
                     sum += currentInt;
                     constraints.addConstraint(new Constraint(currentInt));
                 } catch (NumberFormatException e) {
-                    throw new GameDefinitionsXmlParserExeption(String.format(invalidNumberFormatDefinition, slice.getOrientation(), slice.getId()), e);
+                    throw new GameDefinitionsXmlParserException(String.format(invalidNumberFormatDefinition, slice.getOrientation(), slice.getId()), e);
                 }
 
             }
             if (slice.getOrientation().equals(orientationRow)) {
                 if ((sum + parts.length - 1) > columns) {
-                    throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), columns));
+                    throw new GameDefinitionsXmlParserException(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), columns));
                 } else {
                     rowConstraints[index] = constraints;
                 }
             } else {
                 if ((sum + parts.length - 1) > rows) {
-                    throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), rows));
+                    throw new GameDefinitionsXmlParserException(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), rows));
                 } else {
                     columnConstraints[index] = constraints;
                 }
             }
         } else {
-            throw new GameDefinitionsXmlParserExeption(String.format(invalidBlocksDefinition, slice.getOrientation(), slice.getId()));
+            throw new GameDefinitionsXmlParserException(String.format(invalidBlocksDefinition, slice.getOrientation(), slice.getId()));
         }
     }
 
@@ -178,22 +178,22 @@ public class GameBoardXmlParser {
         return (currentSliceId >= minIndexValue && currentSliceId < maxIndexValue);
     }
 
-    private void extractGameType() throws GameDefinitionsXmlParserExeption {
+    private void extractGameType() throws GameDefinitionsXmlParserException {
         try {
             gametype = GameType.valueOf(gameDescriptor.getGameType());
         } catch (Exception e) {
-            throw new GameDefinitionsXmlParserExeption(String.format(invalidGameTypeMessage, gameDescriptor.getGameType()), e);
+            throw new GameDefinitionsXmlParserException(String.format(invalidGameTypeMessage, gameDescriptor.getGameType()), e);
         }
     }
 
-    private void parseGameDescriptor() throws GameDefinitionsXmlParserExeption {
+    private void parseGameDescriptor() throws GameDefinitionsXmlParserException {
         try {
             gameDescriptor = GameBoardXmlParser.deserializeFrom(new FileInputStream(gameDefinitionsXmlFile));
         } catch (JAXBException e) {
-            throw new GameDefinitionsXmlParserExeption(illegalXmlFileMessage, e);
+            throw new GameDefinitionsXmlParserException(illegalXmlFileMessage, e);
         } catch (FileNotFoundException e) {
 
-            throw new GameDefinitionsXmlParserExeption(e.getMessage(), e);
+            throw new GameDefinitionsXmlParserException(e.getMessage(), e);
         }
     }
 

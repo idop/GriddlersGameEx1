@@ -16,4 +16,12 @@ public class PlayerTurn {
     public void addGameMove(GameMove move) {
         moves.add(move);
     }
+
+    public void undo() {
+        if (moves != null) {
+            for (GameMove move : moves) {
+                move.undo();
+            }
+        }
+    }
 }
