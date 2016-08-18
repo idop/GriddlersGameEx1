@@ -90,6 +90,7 @@ public class GameBoardXmlParser {
         } else {
             throw new GameDefinitionsXmlParserException(solutionIsNotDefined);
         }
+        //TODO Handle Solution Does not Match the constraints
     }
 
     private void extractBoardDimensions() {

@@ -27,16 +27,16 @@ public class Game {
 
     public Game(GameBoardXmlParser gameBoardXmlParser) {
         gameType = gameBoardXmlParser.getGameType();
-        GameBoard gameBoard = new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns());
         rowConstraints = gameBoardXmlParser.getRowConstraints();
         columnConstraints = gameBoardXmlParser.getColumnConstraints();
         solutionBoard = gameBoardXmlParser.getSolutionBoard();
-        maxColumnConstraints = getMaxConstraints(gameBoard.getColumns(), this.columnConstraints);
-        maxRowConstraints = getMaxConstraints(gameBoard.getRows(), this.rowConstraints);
+        maxColumnConstraints = getMaxConstraints(gameBoardXmlParser.getColumns(), this.columnConstraints);
+        maxRowConstraints = getMaxConstraints(gameBoardXmlParser.getRows(), this.rowConstraints);
         numberOfPlayers = 1; // TODO Gerelize This and Read This From Parser
         players = new ArrayList<>(numberOfPlayers); // TODO
         for (int i = 0; i < numberOfPlayers; i++) {// TODO
             players.add(new Player("default Player", PlayerType.Human));// TODO
+            players.get(i).setGameBoard(new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns()));
         }// TODO
     }
 
