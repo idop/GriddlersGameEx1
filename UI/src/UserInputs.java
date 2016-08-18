@@ -1,3 +1,5 @@
+import Game.GameMove;
+
 import java.util.Scanner;
 
 /**
@@ -13,5 +15,12 @@ public  class UserInputs
         res = in.nextLine();
 
         return res;
+    }
+
+    public GameMove getMove()
+    {
+        GameMove move = new GameMove();
+
+        return move;
     }
 }
