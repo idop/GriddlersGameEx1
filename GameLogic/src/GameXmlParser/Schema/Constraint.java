@@ -21,6 +21,11 @@ public class Constraint {
         return isPerfect;
     }
 
+    @Override
+    public String toString() {
+        return Integer.toString(constraint);
+    }
+
     public int getConstraint() {
         return constraint;
     }
