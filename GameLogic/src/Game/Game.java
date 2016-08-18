@@ -44,8 +44,8 @@ public class Game {
         return gameType;
     }
 
-    public BoardSquare[][] getGameBoardSquares() {
-        return players.get(currentPlayerId).getBoard();
+    public GameBoard getGameBoard() {
+        return players.get(currentPlayerId).getGameBoard();
     }
 
     public Constraints getRowConstraint(int i) {
