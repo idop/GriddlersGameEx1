@@ -71,4 +71,21 @@ public class Game {
         }
         return max;
     }
+
+    public void printGameBoard()
+    {
+        String currentRow = "  ";
+        for (int i = 1; i <= gameBoard.getColumns(); i++)
+        {
+            if (i < 10)
+                currentRow += "0" + Integer.toString(i);
+            else
+                currentRow += Integer.toString(i);
+        }
+
+        for (int i = 0; i < gameBoard.getRows() + getMaxRowConstraints(); i++)
+        {
+
+        }
+    }
 }
