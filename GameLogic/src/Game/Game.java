@@ -4,7 +4,6 @@ import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraints;
 import GameXmlParser.Schema.GameType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,7 +48,7 @@ public class Game {
         int max = 0;
         for (int i=0; i < gameBoard.getColumns(); i++)
         {
-            int currentListSize = columnConstraints.get(i).getConstraintsList().size();
+            int currentListSize = columnConstraints.get(i).size();
             if (currentListSize > max)
             {
                 max = currentListSize;
@@ -63,7 +62,7 @@ public class Game {
         int max = 0;
         for (int i=0; i < gameBoard.getColumns(); i++)
         {
-            int currentListSize = rowConstraints.get(i).getConstraintsList().size();
+            int currentListSize = rowConstraints.get(i).size();
             if (currentListSize > max)
             {
                 max = currentListSize;
