@@ -8,14 +8,15 @@ public enum BoardSquare {
 
     @Override
     public String toString() {
+        String res;
         switch (this) {
             case Black:
-                return "| O |";
+                return " o ";
             case White:
-                return "| X |";
+                return " x ";
             case Empty:
             default:
-                return "|   |";
+                return "   ";
         }
     }
 }
