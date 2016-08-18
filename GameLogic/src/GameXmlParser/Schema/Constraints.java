@@ -17,7 +17,9 @@ public class Constraints {
         this.constraints = new ArrayList<>(size);
     }
 
-    public List<Constraint> getConstraintsList() { return constraints; }
+    public int size() {
+        return constraints.size();
+    }
 
     public Constraint getConstraint(int index) {
         return constraints.get(index);
