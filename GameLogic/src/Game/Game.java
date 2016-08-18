@@ -1,9 +1,12 @@
 package Game;
 
+import Game.Player.Player;
+import Game.Player.PlayerType;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraints;
 import GameXmlParser.Schema.GameType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -12,17 +15,37 @@ import java.util.List;
 public class Game {
 
     private final GameType gameType;
-    public GameBoard gameBoard;
-    public List<Constraints> rowConstraints;
-    public List<Constraints> columnConstraints;
-    private SolutionBoard solutionBoard;
+    private final int numberOfPlayers;
+    private final SolutionBoard solutionBoard;
+    private List<Player> players;
+    private int currentPlayerId = 0;
+    private List<Constraints> rowConstraints;
+    private List<Constraints> columnConstraints;
+    private int maxColumnConstraints;
+    private int maxRowConstraints;
+    private boolean playerWon = false;
+
+    public Game(GameBoardXmlParser gameBoardXmlParser) {
+        gameType = gameBoardXmlParser.getGameType();
+        GameBoard gameBoard = new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns());
+        rowConstraints = gameBoardXmlParser.getRowConstraints();
+        columnConstraints = gameBoardXmlParser.getColumnConstraints();
+        solutionBoard = gameBoardXmlParser.getSolutionBoard();
+        maxColumnConstraints = getMaxConstraints(gameBoard.getColumns(), this.columnConstraints);
+        maxRowConstraints = getMaxConstraints(gameBoard.getRows(), this.rowConstraints);
+        numberOfPlayers = 1; // TODO Gerelize This and Read This From Parser
+        players = new ArrayList<>(numberOfPlayers); // TODO
+        for (int i = 0; i < numberOfPlayers; i++) {// TODO
+            players.add(new Player("default Player", PlayerType.Human));// TODO
+        }// TODO
+    }
 
     public GameType getGameType() {
         return gameType;
     }
 
     public BoardSquare[][] getGameBoardSquares() {
-        return gameBoard.getBoard();
+        return players.get(currentPlayerId).getBoard();
     }
 
     public Constraints getRowConstraint(int i) {
@@ -33,41 +56,47 @@ public class Game {
         return columnConstraints.get(i);
     }
 
-    public Game(GameBoardXmlParser gameBoardXmlParser) {
-        gameType = gameBoardXmlParser.getGameType();
-        gameBoard = new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns());
-        rowConstraints = gameBoardXmlParser.getRowConstraints();
-        columnConstraints = gameBoardXmlParser.getColumnConstraints();
-        solutionBoard = gameBoardXmlParser.getSolutionBoard();
+
+    public int getMaxColumnConstraints() {
+        return maxColumnConstraints;
     }
 
-
-
-    public int getMaxColConstraints()
-    {
+    private int getMaxConstraints(int columns, List<Constraints> constraints) {
         int max = 0;
-        for (int i=0; i < gameBoard.getColumns(); i++)
-        {
-            int currentListSize = columnConstraints.get(i).size();
-            if (currentListSize > max)
-            {
+        for (int i = 0; i < columns; i++) {
+            int currentListSize = constraints.get(i).size();
+            if (currentListSize > max) {
                 max = currentListSize;
             }
         }
         return max;
     }
 
-    public int getMaxRowConstraints()
-    {
-        int max = 0;
-        for (int i=0; i < gameBoard.getColumns(); i++)
-        {
-            int currentListSize = rowConstraints.get(i).size();
-            if (currentListSize > max)
-            {
-                max = currentListSize;
-            }
+    public int getMaxRowConstraints() {
+
+        return maxRowConstraints;
+    }
+
+    public void doPlayerTurn(PlayerTurn turn) {
+        Player currentPlayer = players.get(currentPlayerId);
+        currentPlayer.doTurn(turn, solutionBoard);
+        playerWon = currentPlayer.checkIfPlayerWon();
+        if (!playerWon) {
+            currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
         }
-        return max;
+    }
+
+    public void undoTurn() throws PlayerTurnException {
+        players.get(currentPlayerId).undoTurn(solutionBoard);
+        currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
+    }
+
+    public void redoTurn() throws PlayerTurnException {
+        players.get(currentPlayerId).redoTurn(solutionBoard);
+        currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
+    }
+
+    public boolean checkIfPlayerWon() {
+        return playerWon;
     }
 }

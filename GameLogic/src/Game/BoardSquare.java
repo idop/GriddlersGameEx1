@@ -8,12 +8,11 @@ public enum BoardSquare {
 
     @Override
     public String toString() {
-        String res;
         switch (this) {
             case Black:
-                return "| o |";
+                return "| O |";
             case White:
-                return "| x |";
+                return "| X |";
             case Empty:
             default:
                 return "|   |";

@@ -19,7 +19,7 @@ public class GameBoard {
 
     private void resetBoard() {
         for (int i = 0; i < rows; ++i) {
-            for (int j = 0; i < columns; ++j) {
+            for (int j = 0; j < columns; ++j) {
                 board[i][j] = BoardSquare.Empty;
             }
         }
