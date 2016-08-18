@@ -10,12 +10,18 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * Created by ido on 13/08/2016.
  */
 public class GameBoardXmlParser {
+    private static final String JAXB_XML_GAME_PACKAGE_NAME = "GameXmlParser.Schema.Generated";
     private final String illegalXmlFileMessage = "Game.Game Definition Xml File is illegal";
     private final String sliceIsDefinedMoreThenOneTime = "Slice with orientation %s and index %d is defined more then one time";
     private final String sliceIsDefinedWithIllegalId = "Slice with orientation %s and index %d exceeds the maximum index  of %d";
@@ -30,22 +36,23 @@ public class GameBoardXmlParser {
     private final String squareIsNotDefined = "a square is not defined correctly in the provided xml file";
     private final String orientationRow = "row";
     private final String orientationColumn = "column";
-    private final int minIndexValue = 1;
+    private final int minIndexValue = 0;
     private GameDescriptor gameDescriptor;
     private File gameDefinitionsXmlFile;
     private GameType gametype;
     private SolutionBoard solutionBoard;
 
     public List<Constraints> getRowConstraints() {
-        return rowConstraints;
+        return new ArrayList<>(Arrays.asList(rowConstraints));
     }
 
     public List<Constraints> getColumnConstraints() {
-        return columnConstraints;
+
+        return new ArrayList<>(Arrays.asList(columnConstraints));
     }
 
-    private List<Constraints> rowConstraints;
-    private List<Constraints> columnConstraints;
+    private Constraints[] rowConstraints;
+    private Constraints[] columnConstraints;
     private int rows;
     private int columns;
 
@@ -69,10 +76,10 @@ public class GameBoardXmlParser {
             solutionBoard = new SolutionBoard(rows, columns);
             for (Square square : solution.getSquare()) {
                 if (square != null) {
-                    int row = square.getRow().intValue();
-                    int column = square.getColumn().intValue();
+                    int row = square.getRow().intValue() - 1;
+                    int column = square.getColumn().intValue() - 1;
                     if (isValidRange(row, rows) && isValidRange(column, columns)) {
-                        solutionBoard.setBoardSquareAsBlack(row - minIndexValue, column - minIndexValue);
+                        solutionBoard.setBoardSquareAsBlack(row, column);
                     } else {
                         throw new GameDefinitionsXmlParserExeption(squareIsNotDefined);
                     }
@@ -92,12 +99,14 @@ public class GameBoardXmlParser {
 
     private void extractSlices() throws GameDefinitionsXmlParserExeption {
         Slices slices = gameDescriptor.getBoard().getDefinition().getSlices();
-        Boolean[] isRowDefined = new Boolean[rows];
-        Boolean[] isColumnDefined = new Boolean[columns];
+        boolean[] isRowDefined = new boolean[rows];
+        boolean[] isColumnDefined = new boolean[columns];
+        rowConstraints = new Constraints[rows];
+        columnConstraints = new Constraints[columns];
         if (slices != null) {
             for (Slice slice : slices.getSlice()) {
                 if (slice != null) {
-                    int currentSliceIndex = slice.getId().intValue();
+                    int currentSliceIndex = slice.getId().intValue() - 1;
                     switch (slice.getOrientation()) {
                         case orientationRow:
                             extractBlocksFromSlice(isRowDefined, slice, currentSliceIndex, rows);
@@ -117,11 +126,11 @@ public class GameBoardXmlParser {
         }
     }
 
-    private void extractBlocksFromSlice(Boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserExeption {
+    private void extractBlocksFromSlice(boolean[] isOrientationDefined, Slice slice, int currentSliceIndex, int maxIndexValue) throws GameDefinitionsXmlParserExeption {
         if (isValidRange(currentSliceIndex, maxIndexValue)) {
-            if (!isOrientationDefined[currentSliceIndex] || isOrientationDefined[currentSliceIndex] == null) {
+            if (!isOrientationDefined[currentSliceIndex]) {
                 isOrientationDefined[currentSliceIndex] = true;
-                setConstraints(slice);
+                setConstraints(currentSliceIndex, slice);
             } else {
                 throw new GameDefinitionsXmlParserExeption(String.format(sliceIsDefinedMoreThenOneTime, slice.getOrientation(), currentSliceIndex));
             }
@@ -130,17 +139,16 @@ public class GameBoardXmlParser {
         }
     }
 
-    private void setConstraints(Slice slice) throws GameDefinitionsXmlParserExeption {
+    private void setConstraints(int index, Slice slice) throws GameDefinitionsXmlParserExeption {
         String blocks = slice.getBlocks();
         String parts[];
-        String Regex = "\\s\t*,\\s\t*";
         if (blocks != null) {
-            parts = blocks.split(Regex);
+            parts = blocks.split(",");
             Constraints constraints = new Constraints(parts.length);
             int sum = 0;
             for (String part : parts) {
                 try {
-                    int currentInt = Integer.parseInt(part);
+                    int currentInt = Integer.parseInt(part.trim());
                     sum += currentInt;
                     constraints.addConstraint(new Constraint(currentInt));
                 } catch (NumberFormatException e) {
@@ -152,13 +160,13 @@ public class GameBoardXmlParser {
                 if ((sum + parts.length - 1) > columns) {
                     throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), columns));
                 } else {
-                    rowConstraints.add(constraints);
+                    rowConstraints[index] = constraints;
                 }
             } else {
                 if ((sum + parts.length - 1) > rows) {
                     throw new GameDefinitionsXmlParserExeption(String.format(NumberDefinitionExceedsMaximum, slice.getOrientation(), slice.getId(), rows));
                 } else {
-                    columnConstraints.add(constraints);
+                    columnConstraints[index] = constraints;
                 }
             }
         } else {
@@ -167,7 +175,7 @@ public class GameBoardXmlParser {
     }
 
     private boolean isValidRange(int currentSliceId, int maxIndexValue) {
-        return (currentSliceId >= minIndexValue && currentSliceId <= maxIndexValue);
+        return (currentSliceId >= minIndexValue && currentSliceId < maxIndexValue);
     }
 
     private void extractGameType() throws GameDefinitionsXmlParserExeption {
@@ -180,11 +188,12 @@ public class GameBoardXmlParser {
 
     private void parseGameDescriptor() throws GameDefinitionsXmlParserExeption {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(GameDescriptor.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-            gameDescriptor = (GameDescriptor) jaxbUnmarshaller.unmarshal(gameDefinitionsXmlFile);
+            gameDescriptor = GameBoardXmlParser.deserializeFrom(new FileInputStream(gameDefinitionsXmlFile));
         } catch (JAXBException e) {
             throw new GameDefinitionsXmlParserExeption(illegalXmlFileMessage, e);
+        } catch (FileNotFoundException e) {
+
+            throw new GameDefinitionsXmlParserExeption(e.getMessage(), e);
         }
     }
 
@@ -202,5 +211,11 @@ public class GameBoardXmlParser {
 
     public SolutionBoard getSolutionBoard() {
         return solutionBoard;
+    }
+
+    private static GameDescriptor deserializeFrom(InputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(JAXB_XML_GAME_PACKAGE_NAME);
+        Unmarshaller u = jc.createUnmarshaller();
+        return (GameDescriptor) u.unmarshal(in);
     }
 }

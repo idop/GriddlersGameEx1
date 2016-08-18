@@ -8,5 +8,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="GameLogic" exported="" />
+    <orderEntry type="module" module-name="UI" exported="" />
   </component>
 </module>
