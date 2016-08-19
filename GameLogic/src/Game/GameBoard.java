@@ -25,17 +25,27 @@ public class GameBoard {
         }
     }
 
-    public int getRows()
-    {
+    public int getRows() {
         return rows;
     }
 
-    public int getColumns()
-    {
+    public int getColumns() {
         return columns;
     }
 
     public BoardSquare[][] getBoard() {
         return board.clone();
+    }
+
+    public BoardSquare getBoardSquare(int row, int column) {
+        return board[row][column];
+    }
+
+    public void setBoardSquare(int row, int column, BoardSquare square) {
+        board[row][column] = square;
+    }
+
+    public int getNumberOfSquares() {
+        return rows * columns;
     }
 }

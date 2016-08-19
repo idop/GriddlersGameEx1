@@ -21,6 +21,10 @@ public class PlayerTurn {
         moves.add(move);
     }
 
+    public List<GameMove> getMoves() {
+        return moves;
+    }
+
     public void undo() {
         if (moves != null) {
             for (GameMove move : moves) {

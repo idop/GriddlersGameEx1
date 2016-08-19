@@ -22,4 +22,8 @@ public class SolutionBoard {
     public void setBoardSquareAsBlack(int i, int j) {
         solutionBoard[i][j] = BoardSquare.Black;
     }
+
+    public BoardSquare getBoardSquare(int i, int j) {
+        return solutionBoard[i][j];
+    }
 }
