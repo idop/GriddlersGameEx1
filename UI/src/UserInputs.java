@@ -37,7 +37,7 @@ public  class UserInputs
         Direction direction;
         Scanner in = new Scanner(System.in);
 
-        // get move direction
+        // get move direction - TODO: fix the input validation
         System.out.println("Please choose the direction of the move 'Down' or 'Right'");
         while (!in.hasNext() || !(in.hasNext("^Down$") || in.hasNext("^Right$")))
         {
@@ -51,7 +51,7 @@ public  class UserInputs
         while (!in.hasNextInt())
         {
             System.out.println("Please provide a number");
-            in.nextInt();
+            in.nextLine();
         }
         row = in.nextInt();
 
@@ -59,12 +59,12 @@ public  class UserInputs
         while (!in.hasNextInt())
         {
             System.out.println("Please provide a number");
-            in.nextInt();
+            in.nextLine();
         }
         col = in.nextInt();
 
         /*
-        // get the size of the desired move
+        // TODO: validate the size of the desired move
         if(direction == Direction.Down)
             maxMoveSizeAllowed = i_gameBoard.getRows() - row;
         else
@@ -81,7 +81,7 @@ public  class UserInputs
         moveSize = in.nextInt();
 
 
-        // select the operation wanted
+        // select the operation wanted TODO: fix the input validation
         System.out.println("Please choose the square type: 'Black', 'White', 'Empty'");
         while (!in.hasNext() || !(in.hasNext("Black$") || in.hasNext("White$") || in.hasNext("Empty$")))
         {
