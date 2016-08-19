@@ -16,8 +16,6 @@ public class GameMove {
         this.row = row;
         this.column = column;
         this.newBoardSquare = newBoardSquare;
-
-
     }
 
     public int getRow() {

@@ -5,7 +5,7 @@ import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraint;
 import GameXmlParser.Schema.Constraints;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -31,7 +31,14 @@ public class MainMenu {
             System.out.println("[6] Undo last move");
             System.out.println("[7] Get game statistics");
             System.out.println("[8] Quit game");
+
+            while(!in.hasNextInt())
+            {
+                System.out.println("Please select a number from the menu list.");
+                in.nextLine();
+            }
             selection = in.nextInt();
+
 
             switch(selection)
             {
@@ -52,13 +59,17 @@ public class MainMenu {
                 case 3:
                     if (game != null)
                     {
-                        gameBoard = game.gameBoard;
+                        gameBoard = game.getGameBoard();
                         printGameBoard(gameBoard);
                     }
                     else System.out.println("Please start a game first.");
                     break;
 
                 case 4:
+                    if (game != null)
+                    {
+                        UserInputs.getMove(gameBoard);
+                    }
                     break;
 
                 case 5:
@@ -114,7 +125,7 @@ public class MainMenu {
         {
             // print row separator
             currentRow = "";
-            for (int k = 1; k <= gameBoard.getColumns() + 1; k++)
+            for (int k = 1; k <= gameBoard.getColumns() + game.getMaxRowConstraints() + 1; k++)
                 currentRow += "----";
             System.out.println(currentRow);
 
@@ -130,21 +141,58 @@ public class MainMenu {
                 currentRow += boardSquares[i-1][j].toString() + "|";
 
             // add row constraints
-            Constraints constraints = game.rowConstraints.get(i);
+            Constraints constraints = game.getRowConstraint(i - 1);
             for (int n = 0; n < constraints.size(); n++)
             {
+                currentRow += " ";
                 Constraint currentConstraint  = constraints.getConstraint(n);
                 if(currentConstraint.isPerfect())
                 {
                     currentRow += "*";
                 }
                 currentRow += currentConstraint.toString();
+                currentRow += " ";
             }
-
             System.out.println(currentRow);
         }
 
+        // print row separator
+        currentRow = "";
+        for (int k = 1; k <= gameBoard.getColumns() + game.getMaxRowConstraints() + 1; k++)
+            currentRow += "----";
+        System.out.println(currentRow);
+
         // print column constraint
+        for (int i = 0; i < game.getMaxColumnConstraints(); i++)
+        {
+            currentRow = "   |";
+            for (int j = 0; j < gameBoard.getColumns(); j++)
+            {
+                Constraints currentColumnConstraints = game.getColumnConstraint(j);
+                if (currentColumnConstraints.size() > i)
+                {
+                    if (currentColumnConstraints.getConstraint(i).isPerfect())
+                    {
+                        currentRow += "*";
+                    }
+                    else
+                    {
+                        currentRow += " ";
+                    }
+
+                    if (currentColumnConstraints.getConstraint(i).getConstraint() < 10)
+                    {
+                        currentRow += " ";
+                    }
+                    currentRow += currentColumnConstraints.getConstraint(i).toString() + "|";
+                }
+                else
+                {
+                    currentRow += "   |";
+                }
+            }
+            System.out.println(currentRow);
+        }
     }
 
     public static void main(String[] args)
