@@ -68,7 +68,8 @@ public class MainMenu {
                 case 4:
                     if (game != null)
                     {
-                        UserInputs.getMove(gameBoard);
+                        PlayerTurn playerTurn = UserInputs.getMove(game.getGameBoard());
+                        game.doPlayerTurn(playerTurn);
                     }
                     break;
 

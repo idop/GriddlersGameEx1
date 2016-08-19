@@ -56,9 +56,9 @@ public  class UserInputs
             String[] tokens = userInput.split(",");
 
             // check for move direction
-            if (tokens[0].equals('C'))
+            if (tokens[0].equals("C"))
                 direction = Direction.Down;
-            else if (tokens[0].equals('R'))
+            else if (tokens[0].equals("R"))
                 direction = Direction.Right;
             else
                 throw new Exception("Selection invalid for row or column move - choose 'R' or 'C'.");
@@ -99,7 +99,7 @@ public  class UserInputs
             {
                 for (int i = 0; i < moveSize; i++)
                 {
-                    GameMove squareChange = new GameMove(row, col + i, squareType);
+                    GameMove squareChange = new GameMove(row + i, col, squareType);
                     moves.add(squareChange);
                 }
             }
@@ -107,7 +107,7 @@ public  class UserInputs
             {
                 for (int i = 0; i < moveSize; i++)
                 {
-                    GameMove squareChange = new GameMove(row + i, col, squareType);
+                    GameMove squareChange = new GameMove(row, col + i, squareType);
                     moves.add(squareChange);
                 }
             }
@@ -121,76 +121,10 @@ public  class UserInputs
         {
             System.out.println(ex.getMessage());
             System.out.println("Invalid Input please try again.");
+            System.out.println();
             UserInputs.getMove(i_gameBoard);
         }
 
-        /*
-        // get move direction - TODO: fix the input validation
-        System.out.println("Please choose the direction of the move 'Down' or 'Right'");
-        while (!in.hasNext() || !(in.hasNext("^Down$") || in.hasNext("^Right$")))
-        {
-            System.out.println("Please match to one of the types exactly: 'Down', 'Right'");
-            in.nextLine();
-        }
-        direction = Direction.valueOf(in.nextLine());
-
-        // get location of move origin
-        System.out.println("Please provide row:");
-        while (!in.hasNextInt())
-        {
-            System.out.println("Please provide a number");
-            in.nextLine();
-        }
-        row = in.nextInt();
-
-        System.out.println("Please provide column:");
-        while (!in.hasNextInt())
-        {
-            System.out.println("Please provide a number");
-            in.nextLine();
-        }
-        col = in.nextInt();
-        */
-        /*
-        // TODO: validate the size of the desired move
-        if(direction == Direction.Down)
-            maxMoveSizeAllowed = i_gameBoard.getRows() - row;
-        else
-            maxMoveSizeAllowed = i_gameBoard.getColumns() - col;
-        */
-        /*
-        System.out.println("Please state how many slots to change:");
-        //while (!in.hasNextInt() || !(in.nextInt() > maxMoveSizeAllowed))
-        while (!in.hasNextInt())
-        {
-            System.out.println("Please provide a number that will not exceed the board boundaries");
-            in.nextLine();
-        }
-        moveSize = in.nextInt();
-
-
-        // select the operation wanted TODO: fix the input validation
-        System.out.println("Please choose the square type: 'Black', 'White', 'Empty'");
-        while (!in.hasNext() || !(in.hasNext("Black$") || in.hasNext("White$") || in.hasNext("Empty$")))
-        {
-            System.out.println("Please match to one of the types exactly: 'Black', 'White', 'Empty'");
-            in.nextLine();
-        }
-
-        if (in.hasNext("Black$"))
-            squareType = BoardSquare.valueOf("Black");
-        else if (in.hasNext("White$"))
-            squareType = BoardSquare.valueOf("White");
-        else
-            squareType = BoardSquare.valueOf("Empty");
-
-        // build the actual move list
-        for (int i = 0; i < moveSize; i++)
-        {
-            GameMove squareChange = new GameMove(row, col, squareType);
-            moves.add(squareChange);
-        }
-        */
         return res;
     }
 }
