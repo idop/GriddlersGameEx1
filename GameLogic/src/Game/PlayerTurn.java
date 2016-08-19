@@ -13,6 +13,10 @@ public class PlayerTurn {
         this.moves = new ArrayList<GameMove>();
     }
 
+    public PlayerTurn(List<GameMove> i_moves) {
+        this.moves = i_moves;
+    }
+
     public void addGameMove(GameMove move) {
         moves.add(move);
     }

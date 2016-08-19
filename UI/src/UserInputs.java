@@ -1,7 +1,10 @@
 import Game.BoardSquare;
 import Game.GameBoard;
 import Game.GameMove;
+import Game.PlayerTurn;
 
+import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -25,18 +28,103 @@ public  class UserInputs
         return res;
     }
 
-    public static List<GameMove> getMove(GameBoard i_gameBoard)
+    public static PlayerTurn getMove(GameBoard i_gameBoard)
     {
         int row;
         int col;
         int moveSize;
         int maxMoveSizeAllowed;
-        boolean validMove = true;
         BoardSquare squareType;
-        List<GameMove> moves = null;
+        List<GameMove> moves = new ArrayList<GameMove>();
         Direction direction;
         Scanner in = new Scanner(System.in);
+        String userInput;
+        PlayerTurn res = new PlayerTurn();
 
+
+        try
+        {
+            System.out.println("Please provide a move by the following format:");
+            System.out.println("'C' or 'R' for column or row move (respectively)");
+            System.out.println("Row number");
+            System.out.println("Column number");
+            System.out.println("Move size");
+            System.out.println("New square type: 'Black' 'White' or 'Empty' (match case)");
+            System.out.println("Please enter all values as one line separated by ','");
+
+            userInput = in.nextLine();
+            String[] tokens = userInput.split(",");
+
+            // check for move direction
+            if (tokens[0].equals('C'))
+                direction = Direction.Down;
+            else if (tokens[0].equals('R'))
+                direction = Direction.Right;
+            else
+                throw new Exception("Selection invalid for row or column move - choose 'R' or 'C'.");
+
+            // check for row input
+            row = Integer.parseInt(tokens[1]);
+            if (row < 0 || row > i_gameBoard.getRows())
+                throw new Exception("Invalid row number (out of range for the board)");
+
+            // check for column input
+            col = Integer.parseInt(tokens[2]);
+            if (col < 0 || col > i_gameBoard.getColumns())
+                throw new Exception("Invalid column number (out of range for the board)");
+
+            // validate the 'legality' of move
+            if(direction == Direction.Down)
+                maxMoveSizeAllowed = i_gameBoard.getRows() - row;
+            else
+                maxMoveSizeAllowed = i_gameBoard.getColumns() - col;
+
+            // check for column input
+            moveSize = Integer.parseInt(tokens[3]);
+            if (moveSize > maxMoveSizeAllowed)
+                throw new Exception("Size of move is invalid (will go out of board range)");
+
+            // check for new squares state
+            if (tokens[4].equals("Black"))
+                squareType = BoardSquare.valueOf("Black");
+            else if (tokens[4].equals("White"))
+                squareType = BoardSquare.valueOf("White");
+            else if (tokens[4].equals("Empty"))
+                squareType = BoardSquare.valueOf("Empty");
+            else
+                throw new Exception("Value selected for sqaures state invalid. please select 'Black'/'White'/'Empty'");
+
+            // add the square changes to the move list
+            if (direction == Direction.Down)
+            {
+                for (int i = 0; i < moveSize; i++)
+                {
+                    GameMove squareChange = new GameMove(row, col + i, squareType);
+                    moves.add(squareChange);
+                }
+            }
+            else
+            {
+                for (int i = 0; i < moveSize; i++)
+                {
+                    GameMove squareChange = new GameMove(row + i, col, squareType);
+                    moves.add(squareChange);
+                }
+            }
+
+            // instantiate the player turn
+            res = new PlayerTurn(moves);
+            return res;
+        }
+
+        catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            System.out.println("Invalid Input please try again.");
+            UserInputs.getMove(i_gameBoard);
+        }
+
+        /*
         // get move direction - TODO: fix the input validation
         System.out.println("Please choose the direction of the move 'Down' or 'Right'");
         while (!in.hasNext() || !(in.hasNext("^Down$") || in.hasNext("^Right$")))
@@ -62,7 +150,7 @@ public  class UserInputs
             in.nextLine();
         }
         col = in.nextInt();
-
+        */
         /*
         // TODO: validate the size of the desired move
         if(direction == Direction.Down)
@@ -70,7 +158,7 @@ public  class UserInputs
         else
             maxMoveSizeAllowed = i_gameBoard.getColumns() - col;
         */
-
+        /*
         System.out.println("Please state how many slots to change:");
         //while (!in.hasNextInt() || !(in.nextInt() > maxMoveSizeAllowed))
         while (!in.hasNextInt())
@@ -102,7 +190,7 @@ public  class UserInputs
             GameMove squareChange = new GameMove(row, col, squareType);
             moves.add(squareChange);
         }
-
-        return moves;
+        */
+        return res;
     }
 }
