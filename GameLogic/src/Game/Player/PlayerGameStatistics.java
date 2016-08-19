@@ -4,24 +4,29 @@ package Game.Player;
  * Created by ido on 18/08/2016.
  */
 public class PlayerGameStatistics {
-    private int numberOfMoves;
-    private int numberOfUndoMoves;
-    private float score;
+    private int numberOfTurns = 0;
+    private int numberOfUndoTurns = 0;
+    private int numberOfRedoTurns = 0;
+    private float score = 0;
 
-    public int getNumberOfMoves() {
-        return numberOfMoves;
+    public int getNumberOfTurns() {
+        return numberOfTurns;
     }
 
-    public void setNumberOfMoves(int numberOfMoves) {
-        this.numberOfMoves = numberOfMoves;
+    public void incNumberOfTurns() {
+        numberOfTurns++;
     }
 
-    public int getNumberOfUndoMoves() {
-        return numberOfUndoMoves;
+    public int getNumberOfUndoTurns() {
+        return numberOfUndoTurns;
     }
 
-    public void setNumberOfUndoMoves(int numberOfUndoMoves) {
-        this.numberOfUndoMoves = numberOfUndoMoves;
+    public int getNumberOfRedoTurns() {
+        return numberOfRedoTurns;
+    }
+
+    public void incNumberOfUndoTurns() {
+        numberOfUndoTurns++;
     }
 
     public float getScore() {
@@ -30,5 +35,9 @@ public class PlayerGameStatistics {
 
     public void setScore(float score) {
         this.score = score;
+    }
+
+    public void incNumberOfRedoMoves() {
+        numberOfRedoTurns++;
     }
 }

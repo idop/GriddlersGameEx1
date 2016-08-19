@@ -35,8 +35,7 @@ public class Game {
         numberOfPlayers = 1; // TODO Gerelize This and Read This From Parser
         players = new ArrayList<>(numberOfPlayers); // TODO
         for (int i = 0; i < numberOfPlayers; i++) {// TODO
-            players.add(new Player("default Player", PlayerType.Human));// TODO
-            players.get(i).setGameBoard(new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns()));
+            players.add(new Player("default Player", PlayerType.Human, new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns())));// TODO
         }// TODO
     }
 
@@ -80,23 +79,31 @@ public class Game {
     public void doPlayerTurn(PlayerTurn turn) {
         Player currentPlayer = players.get(currentPlayerId);
         currentPlayer.doTurn(turn, solutionBoard);
+        setPerfectConstraints();
         playerWon = currentPlayer.checkIfPlayerWon();
         if (!playerWon) {
             currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
         }
     }
 
+
     public void undoTurn() throws PlayerTurnException {
         players.get(currentPlayerId).undoTurn(solutionBoard);
+        setPerfectConstraints();
         currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     }
 
     public void redoTurn() throws PlayerTurnException {
         players.get(currentPlayerId).redoTurn(solutionBoard);
+        setPerfectConstraints();
         currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     }
 
     public boolean checkIfPlayerWon() {
         return playerWon;
+    }
+
+    private void setPerfectConstraints() {
+        //TODO
     }
 }

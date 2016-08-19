@@ -12,18 +12,23 @@ import java.util.List;
 public class Player {
     private static final String undoExceptionMessage = "Undo List is Empty";
     private static final String redoExceptionMessage = "Redo List is Empty";
+    private final int numberOfBoardSquares;
     private String name;
     private PlayerType playerType;
     private List<PlayerTurn> undoList;
     private List<PlayerTurn> redoList;
     private GameBoard gameBoard;
     private boolean playerWon = false;
+    private PlayerGameStatistics statistics;
 
-    public Player(String name, PlayerType playerType) {
+    public Player(String name, PlayerType playerType, GameBoard gameBoard) {
         this.name = name;
         this.playerType = playerType;
         undoList = new ArrayList<>();
         redoList = new ArrayList<>();
+        statistics = new PlayerGameStatistics();
+        this.gameBoard = gameBoard;
+        numberOfBoardSquares = gameBoard.getNumberOfSquares();
     }
 
     public String getName() {
@@ -38,10 +43,6 @@ public class Player {
         return gameBoard;
     }
 
-    public void setGameBoard(GameBoard gameBoard) {
-        this.gameBoard = gameBoard;
-    }
-
     public PlayerType getPlayerType() {
         return playerType;
     }
@@ -51,23 +52,28 @@ public class Player {
     }
 
 
-    private void revertStep(SolutionBoard solution, List<PlayerTurn> listToRevert, String exceptionMassage) throws PlayerTurnException {
+    private PlayerTurn revertStep(SolutionBoard solution, List<PlayerTurn> listToRevert, String exceptionMassage) throws PlayerTurnException {
+
+        PlayerTurn revertedTurn;
         if (listToRevert.size() != 0) {
             PlayerTurn turn = listToRevert.get(listToRevert.size() - 1);
             listToRevert.remove(listToRevert.size() - 1);
             turn.undo();
-            doActualTrun(turn, solution);
+            revertedTurn = doActualTrun(turn, solution);
         } else {
             throw new PlayerTurnException(exceptionMassage);
         }
+        return revertedTurn;
     }
 
     public void undoTurn(SolutionBoard solution) throws PlayerTurnException {
-        revertStep(solution, undoList, undoExceptionMessage);
+        redoList.add(revertStep(solution, undoList, undoExceptionMessage));
+        statistics.incNumberOfUndoTurns();
     }
 
     public void redoTurn(SolutionBoard solution) throws PlayerTurnException {
-        revertStep(solution, redoList, redoExceptionMessage);
+        undoList.add(revertStep(solution, redoList, redoExceptionMessage));
+        statistics.incNumberOfRedoMoves();
     }
 
     public BoardSquare[][] getBoard() {
@@ -77,6 +83,7 @@ public class Player {
     public void doTurn(PlayerTurn turn, SolutionBoard solution) {
         undoList.add(doActualTrun(turn, solution));
         redoList.clear();
+        statistics.incNumberOfTurns();
     }
 
     public boolean checkIfPlayerWon() {
@@ -84,6 +91,28 @@ public class Player {
     }
 
     private PlayerTurn doActualTrun(PlayerTurn turn, SolutionBoard solution) {
-        throw new RuntimeException(); // TODO
+        int row;
+        int column;
+        for (GameMove gameMove : turn.getMoves()) {
+            row = gameMove.getRow();
+            column = gameMove.getColumn();
+            gameMove.setPreviousBoardSquare(gameBoard.getBoardSquare(row, column));
+            gameBoard.setBoardSquare(row, column, gameMove.getNewBoardSquare());
+        }
+        checkSolution(solution);
+        return turn;
+    }
+
+    private void checkSolution(SolutionBoard solution) {
+        int numberOfCorrcetSquares = 0;
+        for (int i = 0; i < gameBoard.getRows(); ++i) {
+            for (int j = 0; j < gameBoard.getColumns(); ++j) {
+                if (gameBoard.getBoardSquare(i, j) == solution.getBoardSquare(i, j)) {
+                    ++numberOfCorrcetSquares;
+                }
+            }
+        }
+        playerWon = (numberOfCorrcetSquares == numberOfBoardSquares);
+        statistics.setScore(numberOfCorrcetSquares / numberOfBoardSquares);
     }
 }
