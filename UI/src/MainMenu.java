@@ -83,6 +83,20 @@ public class MainMenu {
                     break;
 
                 case 6:
+                    if (game != null)
+                    {
+                        try
+                        {
+                            game.undoTurn();
+                            System.out.println("Undid last turn successfully");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.out.println(ex.getMessage());
+                            System.out.println("Was unable to undo turn..");
+                        }
+                    }
+                    else System.out.println("Please start a game first.");
                     break;
 
                 case 7:
