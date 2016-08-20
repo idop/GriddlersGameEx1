@@ -71,9 +71,15 @@ public class MainMenu {
                         PlayerTurn playerTurn = UserInputs.getMove(game.getGameBoard());
                         game.doPlayerTurn(playerTurn);
                     }
+                    else System.out.println("Please start a game first.");
                     break;
 
                 case 5:
+                    if (game != null)
+                    {
+                        game.printPlayerMoveHistory();
+                    }
+                    else System.out.println("Please start a game first.");
                     break;
 
                 case 6:

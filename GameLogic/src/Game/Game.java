@@ -60,6 +60,12 @@ public class Game {
         return maxColumnConstraints;
     }
 
+
+    public void printPlayerMoveHistory()
+    {
+        players.get(currentPlayerId).printMoveHistory();
+    }
+
     private int getMaxConstraints(int columns, List<Constraints> constraints) {
         int max = 0;
         for (int i = 0; i < columns; i++) {

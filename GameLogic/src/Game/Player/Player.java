@@ -5,6 +5,9 @@ import Game.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
+
+import static Game.PlayerTurn.*;
 
 /**
  * Created by ido on 18/08/2016.
@@ -114,5 +117,13 @@ public class Player {
         }
         playerWon = (numberOfCorrcetSquares == numberOfBoardSquares);
         statistics.setScore(numberOfCorrcetSquares / numberOfBoardSquares);
+    }
+
+    public void printMoveHistory()
+    {
+        for (PlayerTurn turn: this.undoList)
+        {
+            turn.printTurn();
+        }
     }
 }

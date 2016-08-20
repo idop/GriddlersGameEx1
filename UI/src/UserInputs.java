@@ -65,13 +65,15 @@ public  class UserInputs
 
             // check for row input
             row = Integer.parseInt(tokens[1]);
-            if (row < 0 || row > i_gameBoard.getRows())
+            if (row < 1 || row > i_gameBoard.getRows())
                 throw new Exception("Invalid row number (out of range for the board)");
+            row--;  // adjust to the matrix notation (that starts from zero...)
 
             // check for column input
             col = Integer.parseInt(tokens[2]);
-            if (col < 0 || col > i_gameBoard.getColumns())
+            if (col < 1 || col > i_gameBoard.getColumns())
                 throw new Exception("Invalid column number (out of range for the board)");
+            col--;  // adjust to the matrix notation (that starts from zero...)
 
             // validate the 'legality' of move
             if(direction == Direction.Down)
@@ -113,7 +115,7 @@ public  class UserInputs
             }
 
             // instantiate the player turn
-            res = new PlayerTurn(moves);
+            res = new PlayerTurn(moves, direction.name());
             return res;
         }
 
