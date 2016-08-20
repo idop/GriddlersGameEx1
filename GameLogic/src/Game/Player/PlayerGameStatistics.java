@@ -40,4 +40,12 @@ public class PlayerGameStatistics {
     public void incNumberOfRedoMoves() {
         numberOfRedoTurns++;
     }
+
+
+    @Override
+    public String toString()
+    {
+        String res = "Turns done until now: " + getNumberOfTurns() + " | Undo actions done: " + getNumberOfUndoTurns() +  " | Player score: " + getScore();
+        return res;
+    }
 }

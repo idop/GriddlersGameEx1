@@ -24,6 +24,7 @@ public class Game {
     private int maxColumnConstraints;
     private int maxRowConstraints;
     private boolean playerWon = false;
+    private long startTime;
 
     public Game(GameBoardXmlParser gameBoardXmlParser) {
         gameType = gameBoardXmlParser.getGameType();
@@ -32,6 +33,7 @@ public class Game {
         solutionBoard = gameBoardXmlParser.getSolutionBoard();
         maxColumnConstraints = getMaxConstraints(gameBoardXmlParser.getColumns(), this.columnConstraints);
         maxRowConstraints = getMaxConstraints(gameBoardXmlParser.getRows(), this.rowConstraints);
+        startTime = System.currentTimeMillis();
         numberOfPlayers = 1; // TODO Gerelize This and Read This From Parser
         players = new ArrayList<>(numberOfPlayers); // TODO
         for (int i = 0; i < numberOfPlayers; i++) {// TODO
@@ -66,6 +68,14 @@ public class Game {
         players.get(currentPlayerId).printMoveHistory();
     }
 
+    public String getPlayerStatistics()
+    {
+        String res = players.get(currentPlayerId).getPlayerStatisticsString();
+        String timeSinceStart = Long.toString((System.currentTimeMillis() - startTime)/1000);
+        res = res + " | Time since game begun (seconds): " + timeSinceStart;
+        return res;
+    }
+
     private int getMaxConstraints(int columns, List<Constraints> constraints) {
         int max = 0;
         for (int i = 0; i < columns; i++) {
@@ -97,6 +107,7 @@ public class Game {
         players.get(currentPlayerId).undoTurn(solutionBoard);
         setPerfectConstraints();
         currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
+
     }
 
     public void redoTurn() throws PlayerTurnException {

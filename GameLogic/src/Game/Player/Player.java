@@ -46,6 +46,11 @@ public class Player {
         return gameBoard;
     }
 
+    public String getPlayerStatisticsString()
+    {
+        return statistics.toString();
+    }
+
     public PlayerType getPlayerType() {
         return playerType;
     }

@@ -29,8 +29,9 @@ public class MainMenu {
             System.out.println("[4] Make move");
             System.out.println("[5] Show moves history");
             System.out.println("[6] Undo last move");
-            System.out.println("[7] Get game statistics");
-            System.out.println("[8] Quit game");
+            System.out.println("[7] Redo move");
+            System.out.println("[8] Get game statistics");
+            System.out.println("[9] Quit game");
 
             while(!in.hasNextInt())
             {
@@ -100,13 +101,43 @@ public class MainMenu {
                     break;
 
                 case 7:
+                    if (game != null)
+                    {
+                        try
+                        {
+                            game.redoTurn();
+                            System.out.println("Redo performed successfully");
+                        }
+                        catch (Exception ex)
+                        {
+                            System.out.println(ex.getMessage());
+                            System.out.println("Was unable to redo turn..");
+                        }
+                    }
+                    else System.out.println("Please start a game first.");
+                    break;
+
+                case 8:
+                    if (game != null)
+                    {
+                        System.out.println(game.getPlayerStatistics());
+                    }
+                    else System.out.println("Please start a game first.");
                     break;
 
                 default:
                     break;
             }
 
-        }while (selection != 8);
+        }while (selection != 9);
+
+        // print on exit
+        if (game != null)
+        {
+            gameBoard = game.getGameBoard();
+            printGameBoard(gameBoard);
+            System.out.println(game.getPlayerStatistics());
+        }
     }
 
     public GameBoardXmlParser getParser()
