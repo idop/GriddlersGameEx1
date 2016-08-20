@@ -12,6 +12,25 @@ public class Constraint {
         isPerfect = false;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Constraint)) return false;
+
+        Constraint that = (Constraint) o;
+
+        if (constraint != that.getConstraint()) return false;
+        return isPerfect == that.isPerfect();
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = constraint;
+        result = 31 * result + (isPerfect ? 1 : 0);
+        return result;
+    }
+
     public void setPerfect(boolean perfect) {
         isPerfect = perfect;
     }

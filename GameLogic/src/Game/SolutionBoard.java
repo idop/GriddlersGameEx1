@@ -1,5 +1,8 @@
 package Game;
 
+import GameXmlParser.Schema.Constraint;
+import GameXmlParser.Schema.Constraints;
+
 /**
  * Created by ido on 14/08/2016.
  */
@@ -25,5 +28,66 @@ public class SolutionBoard {
 
     public BoardSquare getBoardSquare(int i, int j) {
         return solutionBoard[i][j];
+    }
+
+    public boolean validRowsConstraints(Constraints[] rowConstraints) {
+        boolean res = true;
+        for (int i = 0; i < rowConstraints.length && res; ++i) {
+            Constraints derivedRowConstraintsFromSolution = deriveRowConstraintsFromSolutionBoard(i);
+            res = rowConstraints[i].equals(derivedRowConstraintsFromSolution);
+        }
+        return res;
+    }
+
+
+    public boolean validColumnsConstraints(Constraints[] columnConstraints) {
+        boolean res = true;
+        for (int i = 0; i < columnConstraints.length; ++i) {
+            Constraints derivedColumnConstraintsFromSolution = deriveColumnConstraintsFromSolutionBoard(i);
+            res = columnConstraints[i].equals(derivedColumnConstraintsFromSolution);
+        }
+        return res;
+    }
+
+
+    private Constraints deriveRowConstraintsFromSolutionBoard(int row) {
+        Constraints res = new Constraints();
+        int numberOfBlackSquaresInARow = solutionBoard[row][0] == BoardSquare.Black ? 1 : 0;
+        BoardSquare previousBoardSquare = solutionBoard[row][0];
+        for (int i = 1; i < solutionBoard[row].length; ++i) {
+            if (solutionBoard[row][i] == BoardSquare.Black) {
+                numberOfBlackSquaresInARow++;
+                previousBoardSquare = BoardSquare.Black;
+            } else if (solutionBoard[row][i] == BoardSquare.White) {
+                if (previousBoardSquare == BoardSquare.Black) {
+                    res.addConstraint(new Constraint(numberOfBlackSquaresInARow));
+                    numberOfBlackSquaresInARow = 0;
+                }
+                previousBoardSquare = BoardSquare.White;
+            }
+
+        }
+        return res;
+
+    }
+
+    private Constraints deriveColumnConstraintsFromSolutionBoard(int column) {
+        Constraints res = new Constraints();
+        int numberOfBlackSquaresInARow = solutionBoard[0][column] == BoardSquare.Black ? 1 : 0;
+        BoardSquare previousBoardSquare = solutionBoard[0][column];
+        for (int i = 1; i < solutionBoard.length; ++i) {
+            if (solutionBoard[i][column] == BoardSquare.Black) {
+                numberOfBlackSquaresInARow++;
+                previousBoardSquare = BoardSquare.Black;
+            } else if (solutionBoard[i][column] == BoardSquare.White) {
+                if (previousBoardSquare == BoardSquare.Black) {
+                    res.addConstraint(new Constraint(numberOfBlackSquaresInARow));
+                    numberOfBlackSquaresInARow = 0;
+                }
+                previousBoardSquare = BoardSquare.White;
+            }
+
+        }
+        return res;
     }
 }

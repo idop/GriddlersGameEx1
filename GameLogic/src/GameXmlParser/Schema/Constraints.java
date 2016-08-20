@@ -13,6 +13,10 @@ public class Constraints {
         this.constraints = new ArrayList<>();
     }
 
+    public List<Constraint> getConstraints() {
+        return constraints;
+    }
+
     public Constraints(int size) {
         this.constraints = new ArrayList<>(size);
     }
@@ -28,4 +32,17 @@ public class Constraints {
     public void addConstraint(Constraint constraint) {
         constraints.add(constraint);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Constraints)) return false;
+
+        Constraints that = (Constraints) o;
+
+        return constraints.equals(that.getConstraints());
+
+    }
+
+
 }

@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class GameBoardXmlParser {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "GameXmlParser.Schema.Generated";
-    private final String illegalXmlFileMessage = "Game.Game Definition Xml File is illegal";
+    private final String illegalXmlFileMessage = "Game Definition Xml File is illegal";
     private final String sliceIsDefinedMoreThenOneTime = "Slice with orientation %s and index %d is defined more then one time";
     private final String sliceIsDefinedWithIllegalId = "Slice with orientation %s and index %d exceeds the maximum index  of %d";
     private final String unknownSliceOrentation = "Unknown slice orientation of %s is defined";
@@ -36,11 +36,16 @@ public class GameBoardXmlParser {
     private final String squareIsNotDefined = "a square is not defined correctly in the provided xml file";
     private final String orientationRow = "row";
     private final String orientationColumn = "column";
+    private final String InvalidConstraintsOnSolution = "Solution has a %s Constraint that does not match the constraint defined in the xml file";
     private final int minIndexValue = 0;
     private GameDescriptor gameDescriptor;
     private File gameDefinitionsXmlFile;
     private GameType gametype;
     private SolutionBoard solutionBoard;
+    private Constraints[] rowConstraints;
+    private Constraints[] columnConstraints;
+    private int rows;
+    private int columns;
 
     public List<Constraints> getRowConstraints() {
         return new ArrayList<>(Arrays.asList(rowConstraints));
@@ -50,12 +55,6 @@ public class GameBoardXmlParser {
 
         return new ArrayList<>(Arrays.asList(columnConstraints));
     }
-
-    private Constraints[] rowConstraints;
-    private Constraints[] columnConstraints;
-    private int rows;
-    private int columns;
-
 
     public GameBoardXmlParser(String gameDefinitionsXmlFileName) throws GameDefinitionsXmlParserException {
         gameDefinitionsXmlFile = new File(gameDefinitionsXmlFileName);
@@ -90,7 +89,16 @@ public class GameBoardXmlParser {
         } else {
             throw new GameDefinitionsXmlParserException(solutionIsNotDefined);
         }
-        //TODO Handle Solution Does not Match the constraints
+        checkConstraintsOnSolutionBoard();
+    }
+
+    private void checkConstraintsOnSolutionBoard() throws GameDefinitionsXmlParserException {
+        if (!solutionBoard.validRowsConstraints(rowConstraints)) {
+            throw new GameDefinitionsXmlParserException(String.format(InvalidConstraintsOnSolution, orientationRow));
+        }
+        if (!solutionBoard.validColumnsConstraints(columnConstraints)) {
+            throw new GameDefinitionsXmlParserException(String.format(InvalidConstraintsOnSolution, orientationColumn));
+        }
     }
 
     private void extractBoardDimensions() {
