@@ -11,6 +11,7 @@ import GameXmlParser.Schema.Constraints;
 import java.util.Scanner;
 
 public class MainMenu {
+    private static final String GAME_STARTED_MESSAGE = "Game Already Started";
     GameBoardXmlParser parser = null;
     Game game = null;
     GameBoard gameBoard;
@@ -42,39 +43,47 @@ public class MainMenu {
 
             switch (selection) {
                 case 1:
-                    parser = this.getParser();
+                    if (!gameStarted) {
+                        parser = this.getParser();
+                    } else {
+                        System.out.println(GAME_STARTED_MESSAGE);
+                    }
                     break;
 
                 case 2:
-                    if (parser != null && gameStarted == false) {
-                        game = new Game(parser);
-                        gameStarted = true;
-                        System.out.println("Game initiated!");
+                    if (parser != null) {
+                        if (!gameStarted) {
+                            game = new Game(parser);
+                            gameStarted = true;
+                            System.out.println("Game initiated!");
+                        } else {
+                            System.out.println(GAME_STARTED_MESSAGE);
+                        }
                     } else System.out.println("Please provide configuration first (option [1] in menu).");
                     break;
 
                 case 3:
-                    if (game != null) {
+                    if (gameStarted) {
                         gameBoard = game.getGameBoard();
                         printGameBoard(gameBoard);
                     } else System.out.println("Please start a game first.");
                     break;
 
                 case 4:
-                    if (game != null) {
+                    if (gameStarted) {
                         PlayerTurn playerTurn = UserInputs.getMove(game.getGameBoard());
                         game.doPlayerTurn(playerTurn);
                     } else System.out.println("Please start a game first.");
                     break;
 
                 case 5:
-                    if (game != null) {
+                    if (gameStarted) {
                         game.printPlayerMoveHistory();
                     } else System.out.println("Please start a game first.");
                     break;
 
                 case 6:
-                    if (game != null) {
+                    if (gameStarted) {
                         try {
                             game.undoTurn();
                             System.out.println("Undid last turn successfully");
