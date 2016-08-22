@@ -7,7 +7,7 @@ public class PlayerGameStatistics {
     private int numberOfTurns = 0;
     private int numberOfUndoTurns = 0;
     private int numberOfRedoTurns = 0;
-    private float score = 0;
+    private double score = 0;
 
     public int getNumberOfTurns() {
         return numberOfTurns;
@@ -29,11 +29,11 @@ public class PlayerGameStatistics {
         numberOfUndoTurns++;
     }
 
-    public float getScore() {
+    public double getScore() {
         return score;
     }
 
-    public void setScore(float score) {
+    public void setScore(double score) {
         this.score = score;
     }
 
@@ -43,9 +43,8 @@ public class PlayerGameStatistics {
 
 
     @Override
-    public String toString()
-    {
-        String res = "Turns done until now: " + getNumberOfTurns() + " | Undo actions done: " + getNumberOfUndoTurns() +  " | Player score: " + getScore();
+    public String toString() {
+        String res = "Turns done until now: " + getNumberOfTurns() + " | Undo actions done: " + getNumberOfUndoTurns() + " | Player score: " + (getScore() * 100) + "%";
         return res;
     }
 }

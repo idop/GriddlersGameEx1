@@ -43,20 +43,20 @@ public  class UserInputs
         while (!validInput) {
             try {
                 System.out.println("Please provide a move by the following format:");
-                System.out.println("'C' or 'R' for column or row move (respectively)");
-                System.out.println("Row number");
-                System.out.println("Column number");
-                System.out.println("Move size");
-                System.out.println("New square type: 'Black' 'White' or 'Empty' (match case)");
+                System.out.println("'Down' or 'Right' for the Direction (case insensitive)");
+                System.out.println("Starting row number");
+                System.out.println("Starting column number");
+                System.out.println("Number of squares to change ");
+                System.out.println("New square type: 'Black' 'White' or 'Empty' (case insensitive)");
                 System.out.println("Please enter all values as one line separated by ','");
 
                 userInput = in.nextLine();
                 String[] tokens = userInput.split(",");
 
                 // check for move direction
-                if (tokens[0].equals("C"))
+                if (tokens[0].toUpperCase().equals("DOWN"))
                     direction = Direction.Down;
-                else if (tokens[0].equals("R"))
+                else if (tokens[0].toUpperCase().equals("RIGHT"))
                     direction = Direction.Right;
                 else
                     throw new Exception("Selection invalid for row or column move - choose 'R' or 'C'.");
@@ -85,11 +85,11 @@ public  class UserInputs
                     throw new Exception("Size of move is invalid (will go out of board range)");
 
                 // check for new squares state
-                if (tokens[4].equals("Black"))
+                if (tokens[4].toUpperCase().equals("BLACK"))
                     squareType = BoardSquare.valueOf("Black");
-                else if (tokens[4].equals("White"))
+                else if (tokens[4].toUpperCase().equals("WHITE"))
                     squareType = BoardSquare.valueOf("White");
-                else if (tokens[4].equals("Empty"))
+                else if (tokens[4].toUpperCase().equals("EMPTY"))
                     squareType = BoardSquare.valueOf("Empty");
                 else
                     throw new Exception("Value selected for sqaures state invalid. please select 'Black'/'White'/'Empty'");

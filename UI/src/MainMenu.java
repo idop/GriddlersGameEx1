@@ -2,7 +2,6 @@
 
 import Game.BoardSquare;
 import Game.Game;
-import Game.GameBoard;
 import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraint;
@@ -12,10 +11,10 @@ import java.util.Scanner;
 
 public class MainMenu {
     private static final String GAME_STARTED_MESSAGE = "Game Already Started";
-    GameBoardXmlParser parser = null;
-    Game game = null;
-    GameBoard gameBoard;
+    private GameBoardXmlParser parser = null;
+    private Game game = null;
     boolean gameStarted = false;
+    private boolean playerWon = false;
 
     private void draw() {
         Scanner in = new Scanner(System.in);
@@ -64,8 +63,7 @@ public class MainMenu {
 
                 case 3:
                     if (gameStarted) {
-                        gameBoard = game.getGameBoard();
-                        printGameBoard(gameBoard);
+                        printGameBoard();
                     } else System.out.println("Please start a game first.");
                     break;
 
@@ -73,6 +71,7 @@ public class MainMenu {
                     if (gameStarted) {
                         PlayerTurn playerTurn = UserInputs.getMove(game.getGameBoard());
                         game.doPlayerTurn(playerTurn);
+                        playerWon = game.checkIfPlayerWon();
                     } else System.out.println("Please start a game first.");
                     break;
 
@@ -114,7 +113,14 @@ public class MainMenu {
                     break;
             }
 
-        } while (selection != 9);
+        } while (selection != 9 && !playerWon);
+
+
+        printGameBoard();
+        System.out.println("Player WON!!!!!");
+        System.out.println("Player Game Statistics:");
+        System.out.println(game.getPlayerStatistics());
+
     }
 
     public GameBoardXmlParser getParser() {
@@ -130,12 +136,13 @@ public class MainMenu {
         }
     }
 
-    private void printGameBoard(GameBoard gameBoard) {
-        BoardSquare[][] boardSquares = gameBoard.getBoard();
-
+    private void printGameBoard() {
+        BoardSquare[][] boardSquares = game.getGameBoard().getBoard();
+        int rows = game.getGameBoard().getRows();
+        int columns = game.getGameBoard().getColumns();
         // print column indices
         String currentRow = "   |";
-        for (int i = 1; i <= gameBoard.getColumns(); i++) {
+        for (int i = 1; i <= columns; i++) {
             if (i < 10)
                 currentRow += "00" + Integer.toString(i) + "|";
             else
@@ -144,10 +151,10 @@ public class MainMenu {
         System.out.println(currentRow);
 
         // print board lines
-        for (int i = 1; i <= gameBoard.getRows(); i++) {
+        for (int i = 1; i <= rows; i++) {
             // print row separator
             currentRow = "";
-            for (int k = 1; k <= gameBoard.getColumns() + game.getMaxRowConstraints() + 1; k++)
+            for (int k = 1; k <= columns + game.getMaxRowConstraints() + 1; k++)
                 currentRow += "----";
             System.out.println(currentRow);
 
@@ -159,7 +166,7 @@ public class MainMenu {
                 currentRow += "0" + Integer.toString(i) + "|";
 
             // print the actual board state
-            for (int j = 0; j < gameBoard.getColumns(); j++)
+            for (int j = 0; j < columns; j++)
                 currentRow += boardSquares[i - 1][j].toString() + "|";
 
             // add row constraints
@@ -178,14 +185,14 @@ public class MainMenu {
 
         // print row separator
         currentRow = "";
-        for (int k = 1; k <= gameBoard.getColumns() + game.getMaxRowConstraints() + 1; k++)
+        for (int k = 1; k <= columns + game.getMaxRowConstraints() + 1; k++)
             currentRow += "----";
         System.out.println(currentRow);
 
         // print column constraint
         for (int i = 0; i < game.getMaxColumnConstraints(); i++) {
             currentRow = "   |";
-            for (int j = 0; j < gameBoard.getColumns(); j++) {
+            for (int j = 0; j < columns; j++) {
                 Constraints currentColumnConstraints = game.getColumnConstraint(j);
                 if (currentColumnConstraints.size() > i) {
                     if (currentColumnConstraints.getConstraint(i).isPerfect()) {
