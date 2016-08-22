@@ -1,11 +1,13 @@
 /* Created by Amitai Handler on 8/14/16. */
 
-import Game.*;
+import Game.BoardSquare;
+import Game.Game;
+import Game.GameBoard;
+import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraint;
 import GameXmlParser.Schema.Constraints;
 
-import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
@@ -124,7 +126,6 @@ public class MainMenu {
                     }
                     else System.out.println("Please start a game first.");
                     break;
-
                 default:
                     break;
             }
@@ -147,7 +148,7 @@ public class MainMenu {
             String path = UserInputs.getPath();
             System.out.println(path);
             GameBoardXmlParser parser = new GameBoardXmlParser(path);
-            System.out.println("it works. hurray!");
+            System.out.println("Xml File Loaded Successfully!!");
             return parser;
         }
         catch (Exception ex)

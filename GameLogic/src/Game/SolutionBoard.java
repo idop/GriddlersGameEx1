@@ -34,6 +34,9 @@ public class SolutionBoard {
         boolean res = true;
         for (int i = 0; i < rowConstraints.length && res; ++i) {
             Constraints derivedRowConstraintsFromSolution = deriveRowConstraintsFromSolutionBoard(i);
+            if (derivedRowConstraintsFromSolution.size() == 0) {
+                derivedRowConstraintsFromSolution.addConstraint(new Constraint(0));
+            }
             res = rowConstraints[i].equals(derivedRowConstraintsFromSolution);
         }
         return res;
@@ -57,7 +60,11 @@ public class SolutionBoard {
         for (int i = 1; i < solutionBoard[row].length; ++i) {
             if (solutionBoard[row][i] == BoardSquare.Black) {
                 numberOfBlackSquaresInARow++;
-                previousBoardSquare = BoardSquare.Black;
+                if (i != solutionBoard[row].length - 1) {
+                    previousBoardSquare = BoardSquare.Black;
+                } else {
+                    res.addConstraint(new Constraint(numberOfBlackSquaresInARow));
+                }
             } else if (solutionBoard[row][i] == BoardSquare.White) {
                 if (previousBoardSquare == BoardSquare.Black) {
                     res.addConstraint(new Constraint(numberOfBlackSquaresInARow));
@@ -78,7 +85,11 @@ public class SolutionBoard {
         for (int i = 1; i < solutionBoard.length; ++i) {
             if (solutionBoard[i][column] == BoardSquare.Black) {
                 numberOfBlackSquaresInARow++;
-                previousBoardSquare = BoardSquare.Black;
+                if (i != solutionBoard.length - 1) {
+                    previousBoardSquare = BoardSquare.Black;
+                } else {
+                    res.addConstraint(new Constraint(numberOfBlackSquaresInARow));
+                }
             } else if (solutionBoard[i][column] == BoardSquare.White) {
                 if (previousBoardSquare == BoardSquare.Black) {
                     res.addConstraint(new Constraint(numberOfBlackSquaresInARow));

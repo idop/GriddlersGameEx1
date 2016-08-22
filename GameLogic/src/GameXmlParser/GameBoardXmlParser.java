@@ -89,7 +89,7 @@ public class GameBoardXmlParser {
         } else {
             throw new GameDefinitionsXmlParserException(solutionIsNotDefined);
         }
-        //checkConstraintsOnSolutionBoard(); // TODO: fix xml or something..
+        checkConstraintsOnSolutionBoard();
     }
 
     private void checkConstraintsOnSolutionBoard() throws GameDefinitionsXmlParserException {
