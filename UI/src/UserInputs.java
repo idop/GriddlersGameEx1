@@ -33,6 +33,7 @@ public  class UserInputs
         int col;
         int moveSize;
         int maxMoveSizeAllowed;
+        String comment = "";
         BoardSquare squareType;
         List<GameMove> moves = new ArrayList<GameMove>();
         Direction direction;
@@ -42,13 +43,14 @@ public  class UserInputs
         boolean validInput = false;
         while (!validInput) {
             try {
-                System.out.println("Please provide a move by the following format:");
-                System.out.println("'Down' or 'Right' for the Direction (case insensitive)");
-                System.out.println("Starting row number");
-                System.out.println("Starting column number");
-                System.out.println("Number of squares to change ");
-                System.out.println("New square type: 'Black' 'White' or 'Empty' (case insensitive)");
-                System.out.println("Please enter all values as one line separated by ','");
+                System.out.println("Please provide a move by the following format: (values separated by ',')");
+                System.out.println("1. 'Down' or 'Right' for the Direction (case insensitive)");
+                System.out.println("2. Starting row number");
+                System.out.println("3. Starting column number");
+                System.out.println("4. Number of squares to change ");
+                System.out.println("5. New square type: 'Black' 'White' or 'Empty' (case insensitive)");
+                System.out.println("6. [OPTIONAL] add textual comment for move done");
+                System.out.println("EXAMPLE: \"right,1,1,3,black[,it makes perfect sense!!]\"");
 
                 userInput = in.nextLine();
                 String[] tokens = userInput.split(",");
@@ -59,7 +61,7 @@ public  class UserInputs
                 else if (tokens[0].toUpperCase().equals("RIGHT"))
                     direction = Direction.Right;
                 else
-                    throw new Exception("Selection invalid for row or column move - choose 'R' or 'C'.");
+                    throw new Exception("Selection invalid for row or column move - choose 'Down' or 'Right'.");
 
                 // check for row input
                 row = Integer.parseInt(tokens[1]);
@@ -94,6 +96,14 @@ public  class UserInputs
                 else
                     throw new Exception("Value selected for sqaures state invalid. please select 'Black'/'White'/'Empty'");
 
+                if (tokens.length > 5)
+                {
+                    for (int i = 5; i < tokens.length; i++)
+                    {
+                        comment += tokens[i];
+                    }
+                }
+
                 // add the square changes to the move list
                 if (direction == Direction.Down) {
                     for (int i = 0; i < moveSize; i++) {
@@ -109,6 +119,7 @@ public  class UserInputs
 
                 // instantiate the player turn
                 res = new PlayerTurn(moves, direction.name());
+                res.setComment(comment);
                 validInput = true;
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
