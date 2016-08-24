@@ -54,7 +54,7 @@ public  class UserInputs
 
                 userInput = in.nextLine();
                 String[] tokens = userInput.split(",");
-
+                tokens = trimStringArray(tokens);
                 // check for move direction
                 if (tokens[0].toUpperCase().equals("DOWN"))
                     direction = Direction.Down;
@@ -98,9 +98,10 @@ public  class UserInputs
 
                 if (tokens.length > 5)
                 {
-                    for (int i = 5; i < tokens.length; i++)
+                    comment +=tokens[5];
+                    for (int i = 6; i < tokens.length; i++)
                     {
-                        comment += tokens[i];
+                        comment += ", "+ tokens[i];
                     }
                 }
 
@@ -129,5 +130,12 @@ public  class UserInputs
         }
 
         return res;
+    }
+
+    private static String[] trimStringArray(String[] tokens) {
+        for (int i = 0;  i < tokens.length; ++i){
+            tokens[i] = tokens[i].trim();
+        }
+        return tokens;
     }
 }

@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="GriddlersGameEx1:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/GriddlersGameEx1_jar</output-path>
+    <root id="archive" name="GriddlersGameEx1.jar">
+      <element id="module-output" name="GameLogic" />
+      <element id="module-output" name="GriddlersGameEx1" />
+      <element id="module-output" name="UI" />
+    </root>
+  </artifact>
+</component>
