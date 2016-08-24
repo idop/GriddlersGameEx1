@@ -10,8 +10,14 @@ import java.util.Scanner;
 /**
  * Created by amitaihandler on 8/14/16.
  */
-public  class UserInputs
+public  class InputManager
 {
+    private static final int DIRECTION_SPLIT_INDEX = 0;
+    private static final int ROW_NUMBER_SPLIT_INDEX  = 1;
+    private static final int COLUMN_NUMBER_SPLIT_INDEX = 2;
+    private static final int MOVE_SIZE_SPLIT_INDEX = 3;
+    private static final int MOVE_TYPE_SPLIT_INDEX = 4;
+    private static final int MOVE_COMMENT_SPLIT_INDEX =5;
     public enum Direction
     {
         Down,Right
@@ -56,21 +62,21 @@ public  class UserInputs
                 String[] tokens = userInput.split(",");
                 tokens = trimStringArray(tokens);
                 // check for move direction
-                if (tokens[0].toUpperCase().equals("DOWN"))
+                if (tokens[DIRECTION_SPLIT_INDEX].toUpperCase().equals("DOWN"))
                     direction = Direction.Down;
-                else if (tokens[0].toUpperCase().equals("RIGHT"))
+                else if (tokens[DIRECTION_SPLIT_INDEX].toUpperCase().equals("RIGHT"))
                     direction = Direction.Right;
                 else
                     throw new Exception("Selection invalid for row or column move - choose 'Down' or 'Right'.");
 
                 // check for row input
-                row = Integer.parseInt(tokens[1]);
+                row = Integer.parseInt(tokens[ROW_NUMBER_SPLIT_INDEX]);
                 if (row < 1 || row > i_gameBoard.getRows())
                     throw new Exception("Invalid row number (out of range for the board)");
                 row--;  // adjust to the matrix notation (that starts from zero...)
 
                 // check for column input
-                col = Integer.parseInt(tokens[2]);
+                col = Integer.parseInt(tokens[COLUMN_NUMBER_SPLIT_INDEX]);
                 if (col < 1 || col > i_gameBoard.getColumns())
                     throw new Exception("Invalid column number (out of range for the board)");
                 col--;  // adjust to the matrix notation (that starts from zero...)
@@ -82,24 +88,24 @@ public  class UserInputs
                     maxMoveSizeAllowed = i_gameBoard.getColumns() - col;
 
                 // check for column input
-                moveSize = Integer.parseInt(tokens[3]);
+                moveSize = Integer.parseInt(tokens[MOVE_SIZE_SPLIT_INDEX]);
                 if (moveSize > maxMoveSizeAllowed)
                     throw new Exception("Size of move is invalid (will go out of board range)");
 
                 // check for new squares state
-                if (tokens[4].toUpperCase().equals("BLACK"))
-                    squareType = BoardSquare.valueOf("Black");
-                else if (tokens[4].toUpperCase().equals("WHITE"))
-                    squareType = BoardSquare.valueOf("White");
-                else if (tokens[4].toUpperCase().equals("EMPTY"))
-                    squareType = BoardSquare.valueOf("Empty");
+                if (tokens[MOVE_TYPE_SPLIT_INDEX].toUpperCase().equals("BLACK"))
+                    squareType = BoardSquare.Black;
+                else if (tokens[MOVE_TYPE_SPLIT_INDEX].toUpperCase().equals("WHITE"))
+                    squareType = BoardSquare.White;
+                else if (tokens[MOVE_TYPE_SPLIT_INDEX].toUpperCase().equals("EMPTY"))
+                    squareType = BoardSquare.Empty;
                 else
                     throw new Exception("Value selected for sqaures state invalid. please select 'Black'/'White'/'Empty'");
 
-                if (tokens.length > 5)
+                if (tokens.length > MOVE_COMMENT_SPLIT_INDEX)
                 {
-                    comment +=tokens[5];
-                    for (int i = 6; i < tokens.length; i++)
+                    comment +=tokens[MOVE_COMMENT_SPLIT_INDEX];
+                    for (int i = MOVE_COMMENT_SPLIT_INDEX + 1; i < tokens.length; i++)
                     {
                         comment += ", "+ tokens[i];
                     }

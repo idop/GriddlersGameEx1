@@ -69,7 +69,7 @@ public class MainMenu {
 
                 case 4:
                     if (gameStarted) {
-                        PlayerTurn playerTurn = UserInputs.getMove(game.getGameBoard());
+                        PlayerTurn playerTurn = InputManager.getMove(game.getGameBoard());
                         game.doPlayerTurn(playerTurn);
                         playerWon = game.checkIfPlayerWon();
                     } else System.out.println("Please start a game first.");
@@ -125,7 +125,7 @@ public class MainMenu {
 
     public GameBoardXmlParser getParser() {
         try {
-            String path = UserInputs.getPath();
+            String path = InputManager.getPath();
             System.out.println(path);
             GameBoardXmlParser parser = new GameBoardXmlParser(path);
             System.out.println("Xml File Loaded Successfully");
