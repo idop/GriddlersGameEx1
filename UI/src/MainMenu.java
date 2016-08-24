@@ -94,7 +94,7 @@ public class MainMenu {
                     break;
 
                 case 7:
-                    if (game != null) {
+                    if (gameStarted) {
                         try {
                             game.redoTurn();
                             System.out.println("Redid last undo successfully");
@@ -105,7 +105,7 @@ public class MainMenu {
                     }
                     break;
                 case 8:
-                    if (game != null) {
+                    if (gameStarted) {
                         System.out.println(game.getPlayerStatistics());
                     }
 
@@ -115,12 +115,12 @@ public class MainMenu {
 
         } while (selection != 9 && !playerWon);
 
-
-        printGameBoard();
-        System.out.println("Player WON!!!!!");
-        System.out.println("Player Game Statistics:");
-        System.out.println(game.getPlayerStatistics());
-
+        if (gameStarted) {
+            printGameBoard();
+            System.out.println("Player WON!!!!!");
+            System.out.println("Player Game Statistics:");
+            System.out.println(game.getPlayerStatistics());
+        }
     }
 
     public GameBoardXmlParser getParser() {
