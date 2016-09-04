@@ -1,12 +1,10 @@
 package Game;
 
 import Game.Player.Player;
-import Game.Player.PlayerType;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.Schema.Constraints;
 import GameXmlParser.Schema.GameType;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +23,7 @@ public class Game {
     private int maxRowConstraints;
     private boolean playerWon = false;
     private long startTime;
+    private int numberOfRounds;
 
     public Game(GameBoardXmlParser gameBoardXmlParser) {
         gameType = gameBoardXmlParser.getGameType();
@@ -34,11 +33,17 @@ public class Game {
         maxColumnConstraints = getMaxConstraints(gameBoardXmlParser.getColumns(), this.columnConstraints);
         maxRowConstraints = getMaxConstraints(gameBoardXmlParser.getRows(), this.rowConstraints);
         startTime = System.currentTimeMillis();
-        numberOfPlayers = 1; // TODO Gerelize This and Read This From Parser
-        players = new ArrayList<>(numberOfPlayers); // TODO
-        for (int i = 0; i < numberOfPlayers; i++) {// TODO
-            players.add(new Player("default Player", PlayerType.Human, new GameBoard(gameBoardXmlParser.getRows(), gameBoardXmlParser.getColumns())));// TODO
-        }// TODO
+        players = gameBoardXmlParser.getPlayers();
+        numberOfPlayers = players.size();
+        switch (gameType) {
+            case SinglePlayer:
+                break;
+            case MultiPlayer:
+                numberOfRounds = gameBoardXmlParser.getMoves();
+                break;
+            case DynamicMultiPlayer:
+                break;
+        }
     }
 
     public GameType getGameType() {
@@ -63,15 +68,13 @@ public class Game {
     }
 
 
-    public void printPlayerMoveHistory()
-    {
+    public void printPlayerMoveHistory() {
         players.get(currentPlayerId).printMoveHistory();
     }
 
-    public String getPlayerStatistics()
-    {
+    public String getPlayerStatistics() {
         String res = players.get(currentPlayerId).getPlayerStatisticsString();
-        String timeSinceStart = Long.toString((System.currentTimeMillis() - startTime)/1000);
+        String timeSinceStart = Long.toString((System.currentTimeMillis() - startTime) / 1000);
         res = res + " | Time since game begun (seconds): " + timeSinceStart;
         return res;
     }

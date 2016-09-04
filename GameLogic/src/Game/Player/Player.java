@@ -13,6 +13,7 @@ public class Player {
     private static final String undoExceptionMessage = "Undo List is Empty";
     private static final String redoExceptionMessage = "Redo List is Empty";
     private final int numberOfBoardSquares;
+    private int id;
     private String name;
     private PlayerType playerType;
     private List<PlayerTurn> undoList;
@@ -21,9 +22,10 @@ public class Player {
     private boolean playerWon = false;
     private PlayerGameStatistics statistics;
 
-    public Player(String name, PlayerType playerType, GameBoard gameBoard) {
+    public Player(String name, PlayerType playerType, int id, GameBoard gameBoard) {
         this.name = name;
         this.playerType = playerType;
+        this.id = id;
         undoList = new ArrayList<>();
         redoList = new ArrayList<>();
         statistics = new PlayerGameStatistics();

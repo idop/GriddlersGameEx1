@@ -1,5 +1,7 @@
 package GameXmlParser;
 
+import Game.GameBoard;
+import Game.Player.PlayerType;
 import Game.SolutionBoard;
 import GameXmlParser.Schema.Constraint;
 import GameXmlParser.Schema.Constraints;
@@ -15,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -37,7 +40,10 @@ public class GameBoardXmlParser {
     private final String orientationRow = "row";
     private final String orientationColumn = "column";
     private final String InvalidConstraintsOnSolution = "Solution has a %s Constraint that does not match the constraint defined in the xml file";
+    private final String invlaidMultiplayersMoves = "Invalid Number Of Moves entered %s";
     private final int minIndexValue = 0;
+    private final int maxDimension = 100;
+    private final int minDimension = 10;
     private GameDescriptor gameDescriptor;
     private File gameDefinitionsXmlFile;
     private GameType gametype;
@@ -46,6 +52,18 @@ public class GameBoardXmlParser {
     private Constraints[] columnConstraints;
     private int rows;
     private int columns;
+    private int moves;
+    private List<Game.Player.Player> players = new ArrayList<>();
+
+    public int getMoves() {
+        return moves;
+    }
+
+
+    public List<Game.Player.Player> getPlayers() {
+        return players;
+    }
+
 
     public List<Constraints> getRowConstraints() {
         return new ArrayList<>(Arrays.asList(rowConstraints));
@@ -67,6 +85,44 @@ public class GameBoardXmlParser {
         extractBoardDimensions();
         extractSlices();
         extractSolutionBoard();
+        switch (gametype) {
+            case SinglePlayer:
+                createDefaultPlayer();
+                break;
+            case MultiPlayer:
+                extractMultiPlayersInfo();
+                break;
+            case DynamicMultiPlayer:
+                break;
+        }
+    }
+
+    private void createDefaultPlayer() {
+        players.add(new Game.Player.Player("default Player", PlayerType.Human, 0, new GameBoard(rows, columns)));
+    }
+
+    private void extractMultiPlayersInfo() throws GameDefinitionsXmlParserException {
+        try {
+            moves = Integer.parseInt(gameDescriptor.getMultiPlayers().getMoves());
+            Players xmlPlayers = gameDescriptor.getMultiPlayers().getPlayers();
+            HashSet<Integer> idSet = new HashSet<>();
+            for (Player player : xmlPlayers.getPlayer()) {
+                int id = player.getId().intValue();
+                if (idSet.contains(id)) {
+                    throw new GameDefinitionsXmlParserException("Duplicate Player ID was found in the xml");
+                } else {
+                    idSet.add(id);
+                }
+                PlayerType playerType = PlayerType.valueOf(player.getPlayerType());
+                String name = player.getName();
+                players.add(new Game.Player.Player(name, playerType, id, new GameBoard(rows, columns)));
+
+            }
+        } catch (NumberFormatException e) {
+            throw new GameDefinitionsXmlParserException(String.format("Invalid Number Of Moves entered: %s", gameDescriptor.getMultiPlayers().getMoves() == null ? "null" : gameDescriptor.getMultiPlayers().getMoves()));
+        } catch (Exception e) {
+            throw new GameDefinitionsXmlParserException(e.getMessage());
+        }
     }
 
     private void extractSolutionBoard() throws GameDefinitionsXmlParserException {
@@ -101,9 +157,16 @@ public class GameBoardXmlParser {
         }
     }
 
-    private void extractBoardDimensions() {
+    private void extractBoardDimensions() throws GameDefinitionsXmlParserException {
         rows = gameDescriptor.getBoard().getDefinition().getRows().intValue();
         columns = gameDescriptor.getBoard().getDefinition().getColumns().intValue();
+        if (!validDimension(rows) || !validDimension(columns)) {
+            throw new GameDefinitionsXmlParserException("Board Dimensions should be greater of equal then 10 and less then 100");
+        }
+    }
+
+    private boolean validDimension(int dimension) {
+        return (dimension >= minDimension) && (dimension < maxDimension);
     }
 
     private void extractSlices() throws GameDefinitionsXmlParserException {
