@@ -3,7 +3,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.60" xmlns:fx="http://javafx.com/fxml/1"
+<VBox fx:id="root" xmlns="http://javafx.com/javafx/8.0.102" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="Controller">
    <children>
       <HBox prefHeight="100.0" prefWidth="200.0">
@@ -20,9 +20,9 @@
       </HBox>
       <SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0">
          <items>
-            <SplitPane dividerPositions="0.25" prefHeight="160.0" prefWidth="200.0">
+             <SplitPane dividerPositions="0.2118768328445748" prefHeight="602.0" prefWidth="1245.0">
               <items>
-                <AnchorPane fx:id="playPanel" minHeight="0.0" minWidth="0.0" prefHeight="766.0" prefWidth="400.0">
+                  <AnchorPane fx:id="playPanel" minHeight="0.0" minWidth="0.0" prefHeight="766.0" prefWidth="386.0">
                      <children>
                         <Label layoutX="7.0" layoutY="16.0" text="Player:" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="16.0" />
                         <Label layoutX="7.0" layoutY="40.0" text="Score:" AnchorPane.leftAnchor="7.0" />
@@ -48,7 +48,9 @@
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                      <children>
-                        <SplitPane dividerPositions="0.6656833824975418" prefHeight="766.0" prefWidth="935.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                         <SplitPane dividerPositions="0.6332007952286283" prefHeight="766.0" prefWidth="935.0"
+                                    AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+                                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <items>
                             <AnchorPane fx:id="boardView" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                                  <children>
