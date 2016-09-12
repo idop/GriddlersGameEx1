@@ -1,6 +1,8 @@
 package GameXmlParser;
 
 import Game.GameBoard;
+import Game.Player.ComputerPlayer;
+import Game.Player.HumenPlayer;
 import Game.Player.PlayerType;
 import Game.SolutionBoard;
 import GameXmlParser.Schema.Constraint;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+
 
 /**
  * Created by ido on 13/08/2016.
@@ -115,7 +118,13 @@ public class GameBoardXmlParser {
                 }
                 PlayerType playerType = PlayerType.valueOf(player.getPlayerType());
                 String name = player.getName();
-                players.add(new Game.Player.Player(name, playerType, id, new GameBoard(rows, columns)));
+                Game.Player.Player thePlayer;
+                if (playerType.equals(PlayerType.Human)) {
+                    thePlayer = new HumenPlayer(name, playerType, id, new GameBoard(rows, columns));
+                } else {
+                    thePlayer = new ComputerPlayer(name, playerType, id, new GameBoard(rows, columns));
+                }
+                players.add(thePlayer);
 
             }
         } catch (NumberFormatException e) {
