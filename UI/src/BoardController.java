@@ -7,7 +7,7 @@ import javafx.stage.Stage;
  * Created by amitaihandler on 9/12/16.
  */
 
-public class GridController {
+public class BoardController {
 
     @FXML
     private AnchorPane centerPane;

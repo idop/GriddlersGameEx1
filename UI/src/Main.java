@@ -22,7 +22,7 @@ public class Main extends Application {
         fxmlLoader.setLocation(url);
         Parent root = fxmlLoader.load(url.openStream());
 
-        Controller controller = fxmlLoader.getController();
+        MainController controller = fxmlLoader.getController();
         controller.setPrimaryStage(primaryStage);
 
         System.out.println("  fxmlResource = " + sceneFile);

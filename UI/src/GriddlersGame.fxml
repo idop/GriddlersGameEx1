@@ -17,7 +17,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
    <content>
       <VBox fx:id="root">
          <children>
@@ -33,13 +33,13 @@
                    <Button fx:id="startGameBtn" mnemonicParsing="false" onAction="#startGame" text="Start" />
                </children>
             </HBox>
-            <SplitPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0">
+            <SplitPane maxHeight="768.0" maxWidth="1366.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0">
                <items>
                   <SplitPane dividerPositions="0.25" prefHeight="160.0" prefWidth="200.0">
                     <items>
                         <ScrollPane prefWidth="401.0">
                            <content>
-                            <AnchorPane fx:id="playPanel" minHeight="0.0" minWidth="0.0" prefHeight="766.0" prefWidth="335.0">
+                            <AnchorPane fx:id="playPanel" maxWidth="335.0" minHeight="0.0" minWidth="0.0" prefHeight="766.0" prefWidth="335.0">
                                  <children>
                                     <Label layoutX="7.0" layoutY="16.0" text="Player:" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="16.0" />
                                     <Label layoutX="7.0" layoutY="40.0" text="Score:" AnchorPane.leftAnchor="7.0" />
@@ -69,18 +69,18 @@
                            <children>
                               <SplitPane dividerPositions="0.6656833824975418" prefHeight="766.0" prefWidth="935.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                                 <items>
-                                    <ScrollPane>
+                                    <ScrollPane prefHeight="764.0" prefWidth="666.0">
                                        <content>
-                                        <AnchorPane fx:id="boardView" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                        <AnchorPane fx:id="boardView" minHeight="0.0" minWidth="0.0" prefHeight="764.0" prefWidth="673.0">
                                              <children>
                                                 <Label alignment="TOP_CENTER" layoutX="261.0" layoutY="22.0" text="Selected player board" />
                                              </children>
                                           </AnchorPane>
                                        </content>
                                     </ScrollPane>
-                                    <ScrollPane>
+                                    <ScrollPane prefHeight="764.0" prefWidth="341.0">
                                        <content>
-                                        <AnchorPane fx:id="playersDisplay" minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
+                                        <AnchorPane fx:id="playersDisplay" maxWidth="335.0" minHeight="0.0" minWidth="0.0" prefHeight="764.0" prefWidth="335.0">
                                              <children>
                                                 <Label layoutX="3.0" layoutY="11.0" text="Players list:" />
                                                 <TableView fx:id="playersTableViewList" layoutX="2.0" layoutY="64.0" prefHeight="200.0" prefWidth="337.0">
