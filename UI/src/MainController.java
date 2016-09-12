@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.net.URL;
+import Game.Game;
+import Game.GameBoard;
 
 public class MainController {
 
@@ -53,7 +55,7 @@ public class MainController {
     private TitledPane playerStatistics;
 
     @FXML
-    private AnchorPane boardView;
+    public AnchorPane boardView;
 
     @FXML
     private AnchorPane playersDisplay;
@@ -61,9 +63,11 @@ public class MainController {
     @FXML
     private TableView<?> playersTableViewList;
 
+    private BoardController boardController;
     private Stage primaryStage;
     private GameBoardXmlParser gameXmlParser;
     private FileChooser fileChooser = new FileChooser();
+    private Game game;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -109,14 +113,15 @@ public class MainController {
             FXMLLoader fxmlLoader = new FXMLLoader();
             URL url = getClass().getResource(sceneFile);
             fxmlLoader.setLocation(url);
-            Parent board = fxmlLoader.load(url.openStream());
-
-            BoardController controller = fxmlLoader.getController();
+            //Parent board = fxmlLoader.load(url.openStream());
+            Game game = new Game(gameXmlParser);
+            BoardController controller = new BoardController(boardView);
             boardView.setStyle("-fx-background-color: dimgray");
-            boardView.getChildren().add(board);
+            //boardView.getChildren().add(board);
             startGameBtn.setDisable(true);
             loadPuzzleBtn.setDisable(true);
             controller.setPrimaryStage(primaryStage);
+            //controller.drawBoard(game, game.getGameBoard());
             //primaryStage.setTitle("Boardview muthfacka!");
             //primaryStage.setScene(new Scene(root));
             //primaryStage.show();

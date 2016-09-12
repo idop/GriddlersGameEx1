@@ -1,14 +1,17 @@
 import javafx.fxml.FXML;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-
+import Game.Game;
+import Game.GameBoard;
 
 /**
  * Created by amitaihandler on 9/12/16.
  */
 
 public class BoardController {
-
+    /*
     @FXML
     private AnchorPane centerPane;
 
@@ -23,31 +26,37 @@ public class BoardController {
 
     @FXML
     private AnchorPane rootPane;
-
+    */
     private Stage primaryStage;
+    private Parent root;
+
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    @FXML
-    public void initialize(Stage stage) {
-        int rows = 5;
-        int columns = 5;
+    public BoardController(Parent e)
+    {
+        this.root = e;
+    }
 
-        stage.setTitle("Griddler puzzle");
+    public void drawBoard(Game game, GameBoard gameBoard) {
+        int rows = gameBoard.getRows();
+        int columns = gameBoard.getColumns();
+
         GridPane grid = new GridPane();
         grid.getStyleClass();
 
-        for(int i = 0; i < columns; i++) {
+        for (int i = 0; i < columns; i++) {
             ColumnConstraints column = new ColumnConstraints(40);
             grid.getColumnConstraints().add(column);
         }
 
-        for(int i = 0; i < rows; i++) {
+        for (int i = 0; i < rows; i++) {
             RowConstraints row = new RowConstraints(40);
             grid.getRowConstraints().add(row);
         }
-        stage.show();
+        root.getChildrenUnmodifiable().add(grid);
+        //stage.show();
     }
 }
