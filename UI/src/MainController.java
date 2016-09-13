@@ -3,10 +3,12 @@ import GameXmlParser.GameDefinitionsXmlParserException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -14,7 +16,6 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.net.URL;
 import Game.Game;
-import Game.GameBoard;
 
 public class MainController {
 
@@ -55,7 +56,7 @@ public class MainController {
     private TitledPane playerStatistics;
 
     @FXML
-    public AnchorPane boardView;
+    public StackPane boardView;
 
     @FXML
     private AnchorPane playersDisplay;
@@ -109,19 +110,16 @@ public class MainController {
     @FXML
     void startGame(ActionEvent event) {
         try {
-            String sceneFile = "BoardView.fxml";
-            FXMLLoader fxmlLoader = new FXMLLoader();
-            URL url = getClass().getResource(sceneFile);
-            fxmlLoader.setLocation(url);
-            //Parent board = fxmlLoader.load(url.openStream());
             Game game = new Game(gameXmlParser);
-            BoardController controller = new BoardController(boardView);
+            BoardController boardController = new BoardController(boardView);
             boardView.setStyle("-fx-background-color: dimgray");
-            //boardView.getChildren().add(board);
+            Node board = boardController.getBoard(game,game.getGameBoard());
+            boardView.getChildren().add(board);
+            boardView.setAlignment(board, Pos.CENTER);
             startGameBtn.setDisable(true);
             loadPuzzleBtn.setDisable(true);
-            controller.setPrimaryStage(primaryStage);
-            //controller.drawBoard(game, game.getGameBoard());
+            boardController.setPrimaryStage(primaryStage);
+            //controller.getBoard(game, game.getGameBoard());
             //primaryStage.setTitle("Boardview muthfacka!");
             //primaryStage.setScene(new Scene(root));
             //primaryStage.show();

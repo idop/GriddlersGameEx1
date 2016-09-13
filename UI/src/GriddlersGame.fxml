@@ -14,8 +14,8 @@
 <?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-
 
 <ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
    <content>
@@ -67,15 +67,11 @@
                         </ScrollPane>
                       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
                            <children>
-                              <SplitPane dividerPositions="0.6656833824975418" prefHeight="766.0" prefWidth="935.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <SplitPane dividerPositions="0.6548672566371682" layoutX="-14.0" prefHeight="766.0" prefWidth="935.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="-14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="0.0">
                                 <items>
                                     <ScrollPane prefHeight="764.0" prefWidth="666.0">
                                        <content>
-                                        <AnchorPane fx:id="boardView" minHeight="0.0" minWidth="0.0" prefHeight="764.0" prefWidth="673.0">
-                                             <children>
-                                                <Label alignment="TOP_CENTER" layoutX="261.0" layoutY="22.0" text="Selected player board" />
-                                             </children>
-                                          </AnchorPane>
+                                          <StackPane fx:id="boardView" prefHeight="766.0" prefWidth="660.0" />
                                        </content>
                                     </ScrollPane>
                                     <ScrollPane prefHeight="764.0" prefWidth="341.0">

@@ -1,4 +1,5 @@
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.*;
@@ -28,35 +29,48 @@ public class BoardController {
     private AnchorPane rootPane;
     */
     private Stage primaryStage;
-    private Parent root;
+    private Node root;
 
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
     }
 
-    public BoardController(Parent e)
+    public BoardController(Node e)
     {
         this.root = e;
     }
 
-    public void drawBoard(Game game, GameBoard gameBoard) {
+    public Node getBoard(Game game, GameBoard gameBoard) {
+
         int rows = gameBoard.getRows();
         int columns = gameBoard.getColumns();
 
         GridPane grid = new GridPane();
-        grid.getStyleClass();
+        grid.setStyle("-fx-background-color: White");
 
         for (int i = 0; i < columns; i++) {
-            ColumnConstraints column = new ColumnConstraints(40);
+            ColumnConstraints column = new ColumnConstraints(20);
             grid.getColumnConstraints().add(column);
         }
 
         for (int i = 0; i < rows; i++) {
-            RowConstraints row = new RowConstraints(40);
+            RowConstraints row = new RowConstraints(20);
             grid.getRowConstraints().add(row);
         }
-        root.getChildrenUnmodifiable().add(grid);
-        //stage.show();
+
+
+        grid.setPrefSize(400,400);
+        grid.setGridLinesVisible(true);
+
+        StackPane stackPane = new StackPane();
+        stackPane.setStyle("-fx-background-color: teal");
+        stackPane.setMaxWidth(600);
+        stackPane.setMaxHeight(400);
+        stackPane.setPrefSize(600,400);
+        stackPane.getChildren().add(grid);
+        stackPane.setAlignment(grid, Pos.CENTER);
+
+        return grid;
     }
 }
