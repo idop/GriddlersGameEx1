@@ -2,7 +2,6 @@ import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -14,7 +13,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.net.URL;
+
 import Game.Game;
 
 public class MainController {
@@ -111,18 +110,13 @@ public class MainController {
     void startGame(ActionEvent event) {
         try {
             Game game = new Game(gameXmlParser);
-            BoardController boardController = new BoardController(boardView);
+            BoardController boardController = new BoardController(boardView, game);
             boardView.setStyle("-fx-background-color: dimgray");
-            Node board = boardController.getBoard(game,game.getGameBoard());
+            Node board = boardController.getBoardUI(game);
             boardView.getChildren().add(board);
             boardView.setAlignment(board, Pos.CENTER);
             startGameBtn.setDisable(true);
             loadPuzzleBtn.setDisable(true);
-            boardController.setPrimaryStage(primaryStage);
-            //controller.getBoard(game, game.getGameBoard());
-            //primaryStage.setTitle("Boardview muthfacka!");
-            //primaryStage.setScene(new Scene(root));
-            //primaryStage.show();
 
         }
         catch (Exception ex)
