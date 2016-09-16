@@ -1,7 +1,6 @@
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.*;
@@ -16,7 +15,6 @@ import javafx.scene.text.Font;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.awt.*;
 
 
 /**
@@ -30,8 +28,44 @@ public class BoardController {
     private static int ROWS;
     private Game game;
     private Square[][] boardGrid;
+    private ConstraintSquare[][] columnConstraintsGrid;
+    private ConstraintSquare[][] rowConstraintsGrid;
     private Parent root;
     private List<Square> selectedSquares;
+
+    public class ConstraintSquare extends StackPane{
+        private int row,col;
+        private Rectangle border = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
+        private Text constraint = new Text();
+        private boolean isColumnConstraint;
+        private boolean isPerfect;
+
+        public ConstraintSquare(int x, int y, boolean isColumnConstraint, int i_constraint)
+        {
+            this.row = x;
+            this.col = y;
+            this.isColumnConstraint = isColumnConstraint;
+            this.isPerfect = false;
+
+            border.setFill(Color.GRAY);
+            border.setStroke(Color.BLUEVIOLET);
+            if(isColumnConstraint)
+                border.setStyle("-fx-border-style: hidden solid hidden solid");
+            else
+                border.setStyle("-fx-border-style: solid hidden solid hidden");
+
+            if (i_constraint > 0)
+                this.constraint.setText(Integer.toString(i_constraint));
+            else
+                this.constraint.setText("");
+            constraint.setVisible(true);
+            constraint.setFont(Font.font("font-family: sans",11));
+
+            getChildren().addAll(border, constraint);
+            setTranslateX(row * SQUARE_SIZE);
+            setTranslateY(col * SQUARE_SIZE);
+        }
+    }
 
     public class Square extends StackPane{
         private int row, col;
@@ -51,7 +85,7 @@ public class BoardController {
             border.setFill(Color.WHITE);
 
             white.setText("X");
-            white.setFont(Font.font("font-family: sans",16));
+            white.setFont(Font.font("font-family: sans",18));
             white.setVisible(false);
 
             getChildren().addAll(border, white);
@@ -85,6 +119,7 @@ public class BoardController {
                 border.setFill(Color.YELLOW);
                 isSelected = true;
                 selectedSquares.add(this);
+                this.white.setVisible(false);
             }
             else
             {
@@ -144,7 +179,12 @@ public class BoardController {
     private Parent createBoardUI()
     {
         Pane boardNode = new Pane();
-        boardNode.setPrefSize(ROWS * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
+        Pane columnConstraintsNode = new Pane();
+        Pane rowConstraintsNode = new Pane();
+        int maxColConstraints = game.getMaxColumnConstraints();
+        int maxRowConstraints = game.getMaxRowConstraints();
+
+        boardNode.setPrefSize((ROWS + maxRowConstraints)* SQUARE_SIZE, (COLUMNS + maxColConstraints) * SQUARE_SIZE);
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
                 Square square = new Square(x, y);
@@ -152,14 +192,38 @@ public class BoardController {
                 boardNode.getChildren().add(square);
             }
         }
+
+        this.columnConstraintsGrid = new ConstraintSquare[ROWS][maxColConstraints];
+        columnConstraintsNode.setPrefSize(ROWS * SQUARE_SIZE, maxColConstraints * SQUARE_SIZE);
+        for (int y = 0; y < maxColConstraints; y++){
+            for (int x = 0; x < ROWS; x++) {
+                ConstraintSquare colSquare = new ConstraintSquare(x, y, true, 0);
+                columnConstraintsGrid[x][y] = colSquare;
+                columnConstraintsNode.getChildren().add(colSquare);
+            }
+        }
+        columnConstraintsNode.setTranslateY(-maxColConstraints * SQUARE_SIZE -0.5);
+
+        this.rowConstraintsGrid = new ConstraintSquare[maxRowConstraints][COLUMNS];
+        rowConstraintsNode.setPrefSize(maxRowConstraints * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
+        for (int y = 0; y < COLUMNS; y++){
+            for (int x = 0; x < maxRowConstraints; x++) {
+                ConstraintSquare rowSquare = new ConstraintSquare(x, y, true, 0);
+                rowConstraintsGrid[x][y] = rowSquare;
+                rowConstraintsNode.getChildren().add(rowSquare);
+            }
+        }
+        rowConstraintsNode.setTranslateX(-maxRowConstraints * SQUARE_SIZE);
+        rowConstraintsNode.setTranslateY(1);
+
+        boardNode.getChildren().addAll(rowConstraintsNode, columnConstraintsNode);
+        boardNode.setTranslateX((maxRowConstraints + 3) * SQUARE_SIZE);
+        boardNode.setTranslateY((maxColConstraints + 3) * SQUARE_SIZE);
         return boardNode;
     }
 
 
     public void redrawBoardUI(Game game) {
-
-        //Pane newBoardNode = new Pane();
-        //newBoardNode.setPrefSize(ROWS * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
         GameBoard currentGameBoard = game.getGameBoard();
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
@@ -170,9 +234,6 @@ public class BoardController {
 
 
     public Node getBoardUI(Game game) {
-
-        //Pane newBoardNode = new Pane();
-        //newBoardNode.setPrefSize(ROWS * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
         GameBoard currentGameBoard = game.getGameBoard();
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {

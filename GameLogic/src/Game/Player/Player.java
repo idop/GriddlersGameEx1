@@ -130,4 +130,8 @@ public class Player {
             turn.printTurn();
         }
     }
+
+    public String getScoreString() {
+        return statistics.getScoreAsString();
+    }
 }

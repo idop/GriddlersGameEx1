@@ -1,6 +1,5 @@
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
-import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
@@ -158,8 +157,10 @@ public class MainController {
             boardController = new BoardController(game);
             boardView.setStyle("-fx-background-color: dimgray");
             Node board = boardController.getBoardUI(game);
+            // TODO: add column constraints
+            // TODO: add row constraints
             boardView.getChildren().add(board);
-            boardView.setAlignment(board, Pos.CENTER);
+
             initGame(game);
         }
         catch (Exception ex)
@@ -179,6 +180,7 @@ public class MainController {
         loadPuzzleBtn.setDisable(true);
         playerMakeMoveBtn.setDisable(false);
         currentPlayerName.setText(game.getCurrentPlayer().getName());
+        updatePlayerScore();
         selectedSquares = boardController.getSelectedSquares();
         selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
             @Override
@@ -193,6 +195,11 @@ public class MainController {
         //TODO: bind info to player table..
     }
 
+    public void updatePlayerScore()
+    {
+        currentPlayerScore.setText(game.getCurrentPlayer().getScoreString());
+    }
+
     @FXML
     private void makeMove(ActionEvent event)
     {
@@ -205,11 +212,12 @@ public class MainController {
             int col = square.getCol();
             GameMove move = new GameMove(row, col, BoardSquare.Black);
             turn.addGameMove(move);
-            //TODO: GameBoard should implement PlayTurn(PlayerTurn turn){};..
+            //TODO: what to do with the turn I am creating?..
             game.getGameBoard().setBoardSquare(row, col, selectedStatusForMove);
             iterator.remove();
         }
         boardController.redrawBoardUI(game);
+        updatePlayerScore(); //TODO: check why player score is not updated
     }
 
 }
