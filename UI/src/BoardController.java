@@ -1,4 +1,6 @@
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -10,6 +12,9 @@ import Game.BoardSquare;
 import Game.GameBoard;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.awt.*;
 
@@ -25,10 +30,10 @@ public class BoardController {
     private static int ROWS;
     private Game game;
     private Square[][] boardGrid;
-    private StackPane root;
+    private Parent root;
     private List<Square> selectedSquares;
 
-    private class Square extends StackPane{
+    public class Square extends StackPane{
         private int row, col;
         private BoardSquare squareState;
         private boolean isSelected;
@@ -58,6 +63,9 @@ public class BoardController {
             setOnMouseExited(e -> noHover());
             setOnMouseClicked(e -> selected());
         }
+        public int getRow(){return this.row;}
+
+        public int getCol(){return this.col;}
 
         public void hover()
         {
@@ -72,19 +80,31 @@ public class BoardController {
 
         public void selected()
         {
-            border.setFill(Color.YELLOW);
-            isSelected = true;
-            selectedSquares.add(this);
+            if(!this.isSelected)
+            {
+                border.setFill(Color.YELLOW);
+                isSelected = true;
+                selectedSquares.add(this);
+            }
+            else
+            {
+                this.unSelect();
+            }
         }
 
         public void unSelect()
         {
+            this.isSelected = false;
             changeState(this.squareState);
+            selectedSquares.remove(selectedSquares.indexOf(this));
         }
+
+
 
         public void changeState(BoardSquare newState)
         {
             this.squareState = newState;
+            this.isSelected = false;
             switch (newState)
             {
                 case Black:
@@ -102,24 +122,23 @@ public class BoardController {
                     break;
             }
         }
-
-
-
     }
 
-    public BoardController(StackPane e, Game i_game)
+    public BoardController(Game i_game)
     {
-        this.root = e;
         this.game = i_game;
         this.COLUMNS = game.getGameBoard().getColumns();
         this.ROWS = game.getGameBoard().getRows();
         this.boardGrid = new Square[ROWS][COLUMNS];
-        root.getChildren().add(createBoardUI());
+        this.root = createBoardUI();
+        this.selectedSquares = new ArrayList<>();
+
     }
 
-    public List<Square> getSelectedSquares()
+    public ObservableList<Square> getSelectedSquares()
     {
-        return this.selectedSquares;
+        ObservableList<Square> list = FXCollections.observableList(selectedSquares);
+        return list;
     }
 
     private Parent createBoardUI()
@@ -137,18 +156,39 @@ public class BoardController {
     }
 
 
-    public Node getBoardUI(Game game) {
-        /*
-        Pane newBoardNode = new Pane();
-        newBoardNode.setPrefSize(ROWS * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
+    public void redrawBoardUI(Game game) {
+
+        //Pane newBoardNode = new Pane();
+        //newBoardNode.setPrefSize(ROWS * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
         GameBoard currentGameBoard = game.getGameBoard();
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
                 boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x,y));
             }
         }
-        root.getChildren().add(newBoardNode);
-        */
+    }
+
+
+    public Node getBoardUI(Game game) {
+
+        //Pane newBoardNode = new Pane();
+        //newBoardNode.setPrefSize(ROWS * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
+        GameBoard currentGameBoard = game.getGameBoard();
+        for (int y = 0; y < COLUMNS; y++) {
+            for (int x = 0; x < ROWS; x++) {
+                boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x,y));
+            }
+        }
         return root;
+    }
+
+    public void unSelectAllSquares()
+    {
+        for (Iterator<Square> iterator = selectedSquares.iterator(); iterator.hasNext();)
+        {
+            Square square = iterator.next();
+            square.unSelect();
+            iterator.remove();
+        }
     }
 }

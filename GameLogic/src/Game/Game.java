@@ -123,6 +123,8 @@ public class Game {
         return playerWon;
     }
 
+    public Player getCurrentPlayer() {return players.get(currentPlayerId);}
+
     private void setPerfectConstraints() {
         //TODO
     }
