@@ -63,8 +63,8 @@ public class BoardController {
             constraint.setFont(Font.font("font-family: sans",11));
 
             getChildren().addAll(border, constraint);
-            setTranslateX(row * SQUARE_SIZE);
-            setTranslateY(col * SQUARE_SIZE);
+            setTranslateX(col * SQUARE_SIZE);
+            setTranslateY(row * SQUARE_SIZE);
         }
     }
 
