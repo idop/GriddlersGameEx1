@@ -1,3 +1,7 @@
+import Game.BoardSquare;
+import Game.Game;
+import Game.GameMove;
+import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
 import javafx.beans.value.ChangeListener;
@@ -6,7 +10,6 @@ import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
@@ -18,11 +21,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.Iterator;
-
-import Game.Game;
-import Game.GameMove;
-import Game.BoardSquare;
-import Game.PlayerTurn;
 
 public class MainController {
 
@@ -210,12 +208,11 @@ public class MainController {
             BoardController.Square square = iterator.next();
             int row = square.getRow();
             int col = square.getCol();
-            GameMove move = new GameMove(row, col, BoardSquare.Black);
+            GameMove move = new GameMove(row, col, selectedStatusForMove);
             turn.addGameMove(move);
-            //TODO: what to do with the turn I am creating?..
-            game.getGameBoard().setBoardSquare(row, col, selectedStatusForMove);
             iterator.remove();
         }
+        game.doPlayerTurn(turn);
         boardController.redrawBoardUI(game);
         updatePlayerScore(); //TODO: check why player score is not updated
     }
