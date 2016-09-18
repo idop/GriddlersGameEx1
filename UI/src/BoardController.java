@@ -91,8 +91,8 @@ public class BoardController {
 
             getChildren().addAll(border, white);
 
-            setTranslateX(row * SQUARE_SIZE);
-            setTranslateY(col * SQUARE_SIZE);
+            setTranslateX(col * SQUARE_SIZE);
+            setTranslateY(row * SQUARE_SIZE);
 
             setOnMouseEntered(e -> hover());
             setOnMouseExited(e -> noHover());
