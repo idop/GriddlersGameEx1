@@ -67,7 +67,6 @@ public class Game {
         return maxColumnConstraints;
     }
 
-
     public void printPlayerMoveHistory() {
         players.get(currentPlayerId).printMoveHistory();
     }
