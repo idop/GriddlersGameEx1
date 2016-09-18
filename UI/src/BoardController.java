@@ -48,11 +48,12 @@ public class BoardController {
             this.isPerfect = false;
 
             border.setFill(Color.GRAY);
-            border.setStroke(Color.BLUEVIOLET);
+
             if(isColumnConstraint)
-                border.setStyle("-fx-border-style: hidden solid hidden solid");
+                this.setStyle("-fx-border-color: BLUEVIOLET; -fx-border-width: 0 1 0 1;");
             else
-                border.setStyle("-fx-border-style: solid hidden solid hidden");
+                this.setStyle("-fx-border-color: BLUEVIOLET; -fx-border-width: 1 0 1 0;");
+
 
             if (i_constraint > 0)
                 this.constraint.setText(Integer.toString(i_constraint));
@@ -202,13 +203,13 @@ public class BoardController {
                 columnConstraintsNode.getChildren().add(colSquare);
             }
         }
-        columnConstraintsNode.setTranslateY(-maxColConstraints * SQUARE_SIZE -0.5);
+        columnConstraintsNode.setTranslateY(-maxColConstraints * SQUARE_SIZE);
 
         this.rowConstraintsGrid = new ConstraintSquare[maxRowConstraints][COLUMNS];
         rowConstraintsNode.setPrefSize(maxRowConstraints * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
         for (int y = 0; y < COLUMNS; y++){
             for (int x = 0; x < maxRowConstraints; x++) {
-                ConstraintSquare rowSquare = new ConstraintSquare(x, y, true, 0);
+                ConstraintSquare rowSquare = new ConstraintSquare(x, y, false, 0);
                 rowConstraintsGrid[x][y] = rowSquare;
                 rowConstraintsNode.getChildren().add(rowSquare);
             }
