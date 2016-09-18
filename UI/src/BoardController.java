@@ -1,4 +1,5 @@
 
+import GameXmlParser.Schema.Constraints;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -9,12 +10,14 @@ import javafx.scene.shape.Rectangle;
 import Game.Game;
 import Game.BoardSquare;
 import Game.GameBoard;
+import GameXmlParser.Schema.*;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 /**
@@ -63,9 +66,11 @@ public class BoardController {
             constraint.setFont(Font.font("font-family: sans",11));
 
             getChildren().addAll(border, constraint);
-            setTranslateX(col * SQUARE_SIZE);
-            setTranslateY(row * SQUARE_SIZE);
+            setTranslateX(row * SQUARE_SIZE);
+            setTranslateY(col * SQUARE_SIZE);
         }
+
+        public void setConstraint(int i_constraint) {this.constraint.setText(Integer.toString(i_constraint));}
     }
 
     public class Square extends StackPane{
@@ -205,6 +210,16 @@ public class BoardController {
         }
         columnConstraintsNode.setTranslateY(-maxColConstraints * SQUARE_SIZE);
 
+        for (int x = 0; x < COLUMNS; x++){
+            int y = maxColConstraints - 1;
+            List<Constraint> constraintList = game.getColumnConstraint(x).getConstraints();
+            for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious();){
+                Constraint constraint = iterator.previous();
+                columnConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
+                y--;
+            }
+        }
+
         this.rowConstraintsGrid = new ConstraintSquare[maxRowConstraints][COLUMNS];
         rowConstraintsNode.setPrefSize(maxRowConstraints * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
         for (int y = 0; y < COLUMNS; y++){
@@ -216,6 +231,16 @@ public class BoardController {
         }
         rowConstraintsNode.setTranslateX(-maxRowConstraints * SQUARE_SIZE);
         rowConstraintsNode.setTranslateY(1);
+
+        for (int y = 0; y < ROWS; y++){
+            int x = maxRowConstraints - 1;
+            List<Constraint> constraintList = game.getRowConstraint(y).getConstraints();
+            for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious();){
+                Constraint constraint = iterator.previous();
+                rowConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
+                x--;
+            }
+        }
 
         boardNode.getChildren().addAll(rowConstraintsNode, columnConstraintsNode);
         boardNode.setTranslateX((maxRowConstraints + 3) * SQUARE_SIZE);
