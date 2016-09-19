@@ -245,6 +245,7 @@ public class BoardController {
         boardNode.getChildren().addAll(rowConstraintsNode, columnConstraintsNode);
         boardNode.setTranslateX((maxRowConstraints + 3) * SQUARE_SIZE);
         boardNode.setTranslateY((maxColConstraints + 3) * SQUARE_SIZE);
+
         return boardNode;
     }
 

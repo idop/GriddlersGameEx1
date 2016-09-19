@@ -83,6 +83,18 @@ public class MainController {
     @FXML
     private RadioButton statusUndecidedRBtn;
 
+    @FXML
+    private Button endRoundBtn;
+
+    @FXML
+    private Label currentMoveLabel;
+
+    @FXML
+    private Label ttlMovesLabel;
+
+    @FXML
+    private Label currentTurnLabel;
+
 
     private BoardController boardController;
     private Stage primaryStage;
@@ -265,6 +277,7 @@ public class MainController {
 
     }
 
+    @FXML
     private void endRound() {
         game.endRound();
         if (game.isGameEnded()) {
