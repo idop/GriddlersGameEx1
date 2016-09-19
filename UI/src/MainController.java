@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.Iterator;
+import java.util.List;
 
 public class MainController {
 
@@ -63,9 +64,6 @@ public class MainController {
     private TitledPane playerMoveHistory;
 
     @FXML
-    private TitledPane playerStatistics;
-
-    @FXML
     public StackPane boardView;
 
     @FXML
@@ -95,6 +93,11 @@ public class MainController {
     @FXML
     private Label currentTurnLabel;
 
+    @FXML
+    private ListView<PlayerTurn> moveList;
+
+    @FXML
+    private TextArea moveDescription;
 
     private BoardController boardController;
     private Stage primaryStage;
@@ -309,8 +312,24 @@ public class MainController {
     private void doTurn(PlayerTurn turn) {
         game.doPlayerTurn(turn);
         boardController.redrawBoardUI(game.getGameBoard());
+        //updatePlayerMoveList();
         updatePlayer(); //TODO: check why player score is not updated
     }
+    /*
+    private void updatePlayerMoveList(){
+        ObservableList<PlayerTurn> turnList = game.getCurrentPlayer().getUndoList();
+        moveList.getItems().clear();
+        moveList.setItems(turnList);
+        for (PlayerTurn player: turnList) {
+
+        }
+    }
+
+    @FXML
+    private void undoTurn(ActionEvent event){
+        //TODO: implement undoTurn()..
+    }
+    */
 
     private PlayerTurn getPlayerTurn() {
         PlayerTurn turn = new PlayerTurn();

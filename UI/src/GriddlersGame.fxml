@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Accordion?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.SplitPane?>
@@ -74,7 +75,7 @@
             </HBox>
             <SplitPane maxHeight="768.0" maxWidth="1366.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0">
                <items>
-                  <SplitPane dividerPositions="0.25" prefHeight="160.0" prefWidth="200.0">
+                  <SplitPane dividerPositions="0.25">
                     <items>
                         <ScrollPane prefWidth="401.0">
                            <content>
@@ -83,26 +84,26 @@
                                     <Label layoutX="7.0" layoutY="16.0" text="Player:" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="16.0" />
                                     <Label layoutX="7.0" layoutY="40.0" text="Score:" AnchorPane.leftAnchor="7.0" />
                                     <Label layoutX="10.0" layoutY="134.0" text="Comment:" AnchorPane.leftAnchor="10.0" />
-                                    <TextArea layoutX="9.0" layoutY="151.0" prefHeight="74.0" prefWidth="300.0" />
+                                    <TextArea layoutX="9.0" layoutY="151.0" prefHeight="74.0" prefWidth="314.0" />
                                     <Label fx:id="currentPlayerScore" layoutX="57.0" layoutY="40.0" text="0.0" />
                                     <Label fx:id="currentPlayerName" layoutX="56.0" layoutY="17.0" text="Label" />
-                                    <Button fx:id="playerClearSelectionBtn" layoutX="7.0" layoutY="235.0" mnemonicParsing="false" onAction="#clearSelection" text="Clear selection" />
-                                    <Button fx:id="playerUndoLastBtn" layoutX="127.0" layoutY="235.0" mnemonicParsing="false" text="Undo Last" />
-                                    <Button fx:id="playerMakeMoveBtn" layoutX="219.0" layoutY="235.0" mnemonicParsing="false" onAction="#makeMove" text="Make Move" />
+                                    <Button fx:id="playerClearSelectionBtn" layoutX="7.0" layoutY="235.0" mnemonicParsing="false" onAction="#clearSelection" style="-fx-background-color: lightgray;" text="Clear selection" />
+                                    <Button fx:id="playerUndoLastBtn" layoutX="127.0" layoutY="235.0" mnemonicParsing="false" style="-fx-background-color: lightgray;" text="Undo Last" />
+                                    <Button fx:id="playerMakeMoveBtn" layoutX="219.0" layoutY="235.0" mnemonicParsing="false" onAction="#makeMove" style="-fx-background-color: LightGreen;" text="Make Move" />
                                     <Accordion layoutX="76.0" layoutY="275.0" />
-                                  <TitledPane fx:id="playerMoveHistory" animated="false" layoutX="1.0" layoutY="331.0" prefHeight="351.0" prefWidth="337.0" text="Move history">
-                                    <content>
-                                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
-                                    </content>
+                                  <TitledPane fx:id="playerMoveHistory" animated="false" layoutX="1.0" layoutY="321.0" prefHeight="180.0" prefWidth="337.0" text="Move history">
+                                       <content>
+                                          <ListView fx:id="moveList" prefHeight="200.0" prefWidth="335.0" />
+                                       </content>
                                   </TitledPane>
                                     <RadioButton fx:id="statusBlackRBtn" layoutX="11.0" layoutY="103.0" mnemonicParsing="false" text="Black" />
                                     <RadioButton fx:id="statusEmptyRBtn" layoutX="82.0" layoutY="103.0" mnemonicParsing="false" text="Empty" />
                                     <RadioButton fx:id="statusUndecidedRBtn" layoutX="155.0" layoutY="102.0" mnemonicParsing="false" text="Undecided" />
                                     <Accordion layoutX="122.0" layoutY="655.0" />
-                                  <TitledPane fx:id="playerStatistics" animated="false" layoutX="1.0" layoutY="682.0" prefHeight="28.0" prefWidth="336.0" text="Statistics" />
-                                    <Button fx:id="endRoundBtn" layoutX="58.0" layoutY="277.0" mnemonicParsing="false" onAction="#endRound" prefHeight="27.0" prefWidth="205.0" text="End Round" />
+                                    <Button fx:id="endRoundBtn" layoutX="58.0" layoutY="277.0" mnemonicParsing="false" onAction="#endRound" prefHeight="27.0" prefWidth="205.0" style="-fx-background-color: Pink;" text="End Round" textAlignment="CENTER" />
                                     <Label layoutX="7.0" layoutY="66.0" text="Turn:" />
                                     <Label fx:id="currentTurnLabel" layoutX="52.0" layoutY="66.0" text="0" />
+                                    <TextArea fx:id="moveDescription" layoutX="11.0" layoutY="524.0" prefHeight="200.0" prefWidth="314.0" />
                                  </children>
                               </AnchorPane>
                            </content>
@@ -113,7 +114,7 @@
                                 <items>
                                     <ScrollPane prefHeight="764.0" prefWidth="666.0">
                                        <content>
-                                          <StackPane fx:id="boardView" />
+                                          <StackPane fx:id="boardView" minHeight="764.0" minWidth="662.0" />
                                        </content>
                                     </ScrollPane>
                                     <ScrollPane prefHeight="764.0" prefWidth="341.0">

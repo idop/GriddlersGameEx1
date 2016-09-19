@@ -3,6 +3,8 @@ package Game.Player;
 
 import Game.*;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +81,8 @@ public class Player {
     public void setPlayerType(PlayerType playerType) {
         this.playerType = playerType;
     }
+
+    public ObservableList<PlayerTurn> getUndoList() {return (ObservableList<PlayerTurn>) this.undoList;}
 
 
     private PlayerTurn revertStep(SolutionBoard solution, List<PlayerTurn> listToRevert, String exceptionMassage) throws PlayerTurnException {
