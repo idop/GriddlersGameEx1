@@ -30,7 +30,7 @@ public class PlayerGameStatistics {
     }
 
     public double getScore() {
-        return score;
+        return score * 100;
     }
 
     public String getScoreAsString() {return Double.toString(score);}

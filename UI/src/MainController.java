@@ -187,8 +187,7 @@ public class MainController {
         playerClearSelectionBtn.setDisable(false);
         playerMakeMoveBtn.setDisable(false);
         playerUndoLastBtn.setDisable(false);
-        currentPlayerName.setText(game.getCurrentPlayer().getName());
-        updatePlayerScore();
+        updatePlayer();
         selectedSquares = boardController.getSelectedSquares();
         selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
             @Override
@@ -236,8 +235,9 @@ public class MainController {
 
     }
 
-    public void updatePlayerScore() {
-        currentPlayerScore.setText(game.getCurrentPlayer().getScoreString());
+    public void updatePlayer() {
+        currentPlayerScore.setText(game.getCurrentPlayer().getScoreProperty().toString());
+        currentPlayerName.setText(game.getCurrentPlayer().getName());
     }
 
     @FXML
@@ -271,7 +271,7 @@ public class MainController {
             endCurrentGame();
         } else {
             boardController.redrawBoardUI(game.getGameBoard());
-            updatePlayerScore(); //TODO: check why player score is not updated
+            updatePlayer(); //TODO: check why player score is not updated
             currentMoveNumber = 1;
         }
 
@@ -296,7 +296,7 @@ public class MainController {
     private void doTurn(PlayerTurn turn) {
         game.doPlayerTurn(turn);
         boardController.redrawBoardUI(game.getGameBoard());
-        updatePlayerScore(); //TODO: check why player score is not updated
+        updatePlayer(); //TODO: check why player score is not updated
     }
 
     private PlayerTurn getPlayerTurn() {

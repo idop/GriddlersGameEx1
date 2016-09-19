@@ -237,7 +237,6 @@ public class BoardController {
             for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious(); ) {
                 Constraint constraint = iterator.previous();
                 rowConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
-                System.out.println(String.format("row: %d, column:%d", x, y));
                 y--;
             }
         }
