@@ -70,8 +70,8 @@ public class BoardController {
             constraint.setFont(Font.font("font-family: sans", 11));
 
             getChildren().addAll(border, constraint);
-            setTranslateX(row * SQUARE_SIZE);
-            setTranslateY(col * SQUARE_SIZE);
+            setTranslateX(col * SQUARE_SIZE);
+            setTranslateY(row * SQUARE_SIZE);
         }
 
         public void setConstraint(int i_constraint) {
@@ -189,7 +189,7 @@ public class BoardController {
         Pane rowConstraintsNode = new Pane();
 
 
-        boardNode.setPrefSize((ROWS + maxRowConstraints) * SQUARE_SIZE, (COLUMNS + maxColConstraints) * SQUARE_SIZE);
+        boardNode.setPrefSize((COLUMNS + maxRowConstraints) * SQUARE_SIZE, (ROWS + maxColConstraints) * SQUARE_SIZE);
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
                 Square square = new Square(x, y);
@@ -198,10 +198,10 @@ public class BoardController {
             }
         }
 
-        this.columnConstraintsGrid = new ConstraintSquare[ROWS][maxColConstraints];
+        this.columnConstraintsGrid = new ConstraintSquare[maxColConstraints][COLUMNS];
         columnConstraintsNode.setPrefSize(ROWS * SQUARE_SIZE, maxColConstraints * SQUARE_SIZE);
-        for (int y = 0; y < maxColConstraints; y++) {
-            for (int x = 0; x < ROWS; x++) {
+        for (int y = 0; y < COLUMNS; y++) {
+            for (int x = 0; x < maxColConstraints; x++) {
                 ConstraintSquare colSquare = new ConstraintSquare(x, y, true, 0);
                 columnConstraintsGrid[x][y] = colSquare;
                 columnConstraintsNode.getChildren().add(colSquare);
@@ -209,20 +209,20 @@ public class BoardController {
         }
         columnConstraintsNode.setTranslateY(-maxColConstraints * SQUARE_SIZE);
 
-        for (int x = 0; x < COLUMNS; x++) {
-            int y = maxColConstraints - 1;
-            List<Constraint> constraintList = columnConstraints.get(x).getConstraints();
+        for (int y = 0; y < COLUMNS; y++) {
+            int x = maxColConstraints - 1;
+            List<Constraint> constraintList = columnConstraints.get(y).getConstraints();
             for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious(); ) {
                 Constraint constraint = iterator.previous();
                 columnConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
-                y--;
+                x--;
             }
         }
 
-        this.rowConstraintsGrid = new ConstraintSquare[maxRowConstraints][COLUMNS];
+        this.rowConstraintsGrid = new ConstraintSquare[ROWS][maxRowConstraints];
         rowConstraintsNode.setPrefSize(maxRowConstraints * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
-        for (int y = 0; y < COLUMNS; y++) {
-            for (int x = 0; x < maxRowConstraints; x++) {
+        for (int y = 0; y < maxRowConstraints; y++) {
+            for (int x = 0; x < ROWS; x++) {
                 ConstraintSquare rowSquare = new ConstraintSquare(x, y, false, 0);
                 rowConstraintsGrid[x][y] = rowSquare;
                 rowConstraintsNode.getChildren().add(rowSquare);
@@ -231,16 +231,17 @@ public class BoardController {
         rowConstraintsNode.setTranslateX(-maxRowConstraints * SQUARE_SIZE);
         rowConstraintsNode.setTranslateY(1);
 
-        for (int y = 0; y < ROWS; y++) {
-            int x = maxRowConstraints - 1;
-            List<Constraint> constraintList = rowConstraints.get(y).getConstraints();
+        for (int x = 0; x < ROWS; x++) {
+            int y = maxRowConstraints - 1;
+            List<Constraint> constraintList = rowConstraints.get(x).getConstraints();
             for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious(); ) {
                 Constraint constraint = iterator.previous();
                 rowConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
                 System.out.println(String.format("row: %d, column:%d", x, y));
-                x--;
+                y--;
             }
         }
+
 
         boardNode.getChildren().addAll(rowConstraintsNode, columnConstraintsNode);
         boardNode.setTranslateX((maxRowConstraints + 3) * SQUARE_SIZE);
