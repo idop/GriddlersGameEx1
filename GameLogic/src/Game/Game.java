@@ -22,8 +22,10 @@ public class Game {
     private int maxColumnConstraints;
     private int maxRowConstraints;
     private boolean playerWon = false;
+    private int currentRound;
+    private boolean gameEnded;
     private long startTime;
-    private int numberOfRounds;
+    private int maxNumberOfRounds;
 
     public Game(GameBoardXmlParser gameBoardXmlParser) {
         gameType = gameBoardXmlParser.getGameType();
@@ -39,13 +41,16 @@ public class Game {
             case SinglePlayer:
                 break;
             case MultiPlayer:
-                numberOfRounds = gameBoardXmlParser.getMoves();
+                maxNumberOfRounds = gameBoardXmlParser.getMoves();
                 break;
             case DynamicMultiPlayer:
                 break;
         }
     }
 
+    public boolean isGameEnded() {
+        return gameEnded;
+    }
 
     public List<Player> getPlayers() {
         return players;
@@ -59,6 +64,7 @@ public class Game {
     public List<Constraints> getColumnConstraints() {
         return columnConstraints;
     }
+
     public GameType getGameType() {
         return gameType;
     }
@@ -111,10 +117,7 @@ public class Game {
         Player currentPlayer = players.get(currentPlayerId);
         currentPlayer.doTurn(turn, solutionBoard);
         setPerfectConstraints();
-        playerWon = currentPlayer.checkIfPlayerWon();
-        if (!playerWon) {
-            currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
-        }
+        playerWon = gameEnded = currentPlayer.checkIfPlayerWon();
     }
 
 
@@ -135,9 +138,28 @@ public class Game {
         return playerWon;
     }
 
-    public Player getCurrentPlayer() {return players.get(currentPlayerId);}
+    public Player getCurrentPlayer() {
+        return players.get(currentPlayerId);
+    }
 
     private void setPerfectConstraints() {
         //TODO
+    }
+
+    public void endRound() {
+        int nextPlayerId = (currentPlayerId + 1) % numberOfPlayers;
+        currentPlayerId = nextPlayerId;
+        int newRoundNumber;
+        if (nextPlayerId == 0) {
+            newRoundNumber = currentRound + 1;
+            if (newRoundNumber > maxNumberOfRounds) {
+                gameEnded = true;
+            } else {
+                currentRound = newRoundNumber;
+            }
+        }
+
+
+
     }
 }

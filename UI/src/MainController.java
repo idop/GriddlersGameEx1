@@ -2,6 +2,7 @@ import Game.BoardSquare;
 import Game.Game;
 import Game.GameMove;
 import Game.Player.Player;
+import Game.Player.PlayerType;
 import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
@@ -27,6 +28,7 @@ import java.util.Iterator;
 
 public class MainController {
 
+    private static final int MAX_NUMBER_OF_TURNS_PER_ROUND = 2;
     @FXML
     private VBox root;
 
@@ -89,7 +91,9 @@ public class MainController {
     private Game game;
     private ObservableList<BoardController.Square> selectedSquares;
     private BoardSquare selectedStatusForMove = BoardSquare.Black;
-    final ToggleGroup statusButtons = new ToggleGroup();
+    private final ToggleGroup statusButtons = new ToggleGroup();
+    private boolean isGameFinished = false;
+    private int currentMoveNumber = 1;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -98,11 +102,8 @@ public class MainController {
     @FXML
     private void initialize() {
         startGameBtn.setDisable(true);
-        playerClearSelectionBtn.setDisable(true);
-        playerUndoLastBtn.setDisable(true);
-        playerMakeMoveBtn.setDisable(true);
+        disablePlayerControls();
         statusBlackRBtn.setToggleGroup(statusButtons);
-        statusBlackRBtn.setSelected(true);
         statusBlackRBtn.requestFocus();
         statusEmptyRBtn.setToggleGroup(statusButtons);
         statusUndecidedRBtn.setToggleGroup(statusButtons);
@@ -117,7 +118,13 @@ public class MainController {
                     selectedStatusForMove = BoardSquare.Empty;
             }
         });
-        statusBlackRBtn.setDisable(true);
+    }
+
+    private void disablePlayerControls() {
+        playerClearSelectionBtn.setDisable(true);
+        playerUndoLastBtn.setDisable(true);
+        playerMakeMoveBtn.setDisable(true);
+        statusBlackRBtn.setSelected(true);
         statusEmptyRBtn.setDisable(true);
         statusUndecidedRBtn.setDisable(true);
         playerClearSelectionBtn.setDisable(true);
@@ -169,6 +176,7 @@ public class MainController {
 
     @FXML
     void startGame(ActionEvent event) {
+        playersTableViewList.setDisable(false);
         boardView.setDisable(false);
         startGameBtn.setDisable(true);
         loadPuzzleBtn.setDisable(true);
@@ -188,6 +196,9 @@ public class MainController {
                 System.out.println("selectedList change!");
             }
         });
+        if (game.getCurrentPlayer().getPlayerType().equals(PlayerType.Computer)) {
+            makeComputerTurn();
+        }
     }
 
     private void initPlayerTable() {
@@ -199,21 +210,29 @@ public class MainController {
         playersTableViewList.setEditable(false);
         TableColumn idCol = new TableColumn("ID");
         idCol.setMinWidth(100);
+        idCol.setSortable(false);
         idCol.setCellValueFactory(
                 new PropertyValueFactory<Player, String>("idProperty"));
         playersTableViewList.getColumns().clear();
         TableColumn typeCol = new TableColumn("Type");
         typeCol.setMinWidth(100);
+        typeCol.setSortable(false);
         typeCol.setCellValueFactory(
                 new PropertyValueFactory<Player, String>("typeProperty"));
         playersTableViewList.getColumns().clear();
         TableColumn nameCol = new TableColumn("Name");
         nameCol.setMinWidth(100);
+        nameCol.setSortable(false);
         nameCol.setCellValueFactory(
                 new PropertyValueFactory<Player, String>("nameProperty"));
+        TableColumn scoreCol = new TableColumn("Score");
+        scoreCol.setMinWidth(100);
+        scoreCol.setSortable(false);
+        scoreCol.setCellValueFactory(
+                new PropertyValueFactory<Player, String>("scoreProperty"));
 
         playersTableViewList.setItems(tableData);
-        playersTableViewList.getColumns().addAll(idCol, typeCol, nameCol);
+        playersTableViewList.getColumns().addAll(idCol, typeCol, nameCol, scoreCol);
 
     }
 
@@ -223,6 +242,64 @@ public class MainController {
 
     @FXML
     private void makeMove(ActionEvent event) {
+        makeHumenPlayerMove();
+    }
+
+    private void makeMultiPlayerMove() {
+        makeHumenPlayerMove();
+        //Todo update Move Label
+    }
+
+    private void makeComputerTurn() {
+        makeComputerMove();
+        if (game.checkIfPlayerWon()) {
+            endCurrentGame();
+        }
+        makeComputerMove();
+        if (game.checkIfPlayerWon()) {
+            endCurrentGame();
+        } else {
+            endRound();
+        }
+
+
+    }
+
+    private void endRound() {
+        game.endRound();
+        if (game.isGameEnded()) {
+            endCurrentGame();
+        } else {
+            boardController.redrawBoardUI(game.getGameBoard());
+            updatePlayerScore(); //TODO: check why player score is not updated
+            currentMoveNumber = 1;
+        }
+
+    }
+
+    private void makeComputerMove() {
+        doTurn(new PlayerTurn());
+
+    }
+
+    private void makeHumenPlayerMove() {
+        PlayerTurn turn = getPlayerTurn();
+        doTurn(turn);
+        if (currentMoveNumber == MAX_NUMBER_OF_TURNS_PER_ROUND) {
+            playerMakeMoveBtn.setDisable(true);
+        } else {
+            currentMoveNumber++;
+        }
+
+    }
+
+    private void doTurn(PlayerTurn turn) {
+        game.doPlayerTurn(turn);
+        boardController.redrawBoardUI(game.getGameBoard());
+        updatePlayerScore(); //TODO: check why player score is not updated
+    }
+
+    private PlayerTurn getPlayerTurn() {
         PlayerTurn turn = new PlayerTurn();
         selectedSquares = boardController.getSelectedSquares();
         for (Iterator<BoardController.Square> iterator = selectedSquares.iterator(); iterator.hasNext(); ) {
@@ -233,9 +310,13 @@ public class MainController {
             turn.addGameMove(move);
             iterator.remove();
         }
-        game.doPlayerTurn(turn);
-        boardController.redrawBoardUI(game);
-        updatePlayerScore(); //TODO: check why player score is not updated
+        return turn;
+    }
+
+    private void endCurrentGame() {
+        disablePlayerControls();
+        boardView.setDisable(true);
+        loadPuzzleBtn.setDisable(false);
     }
 
 }

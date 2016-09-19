@@ -250,11 +250,10 @@ public class BoardController {
     }
 
 
-    public void redrawBoardUI(Game game) {
-        GameBoard currentGameBoard = game.getGameBoard();
+    public void redrawBoardUI(GameBoard gameBoard) {
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
-                boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x, y));
+                boardGrid[x][y].changeState(gameBoard.getBoardSquare(x, y));
             }
         }
     }

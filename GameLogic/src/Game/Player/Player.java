@@ -25,6 +25,7 @@ public class Player {
     private final SimpleStringProperty nameProperty;
     private final SimpleStringProperty idProperty;
     private final SimpleStringProperty typeProperty;
+    private final SimpleStringProperty scoreProperty;
 
 
     public Player(String name, PlayerType playerType, int id, GameBoard gameBoard) {
@@ -39,6 +40,19 @@ public class Player {
         nameProperty = new SimpleStringProperty(name);
         idProperty = new SimpleStringProperty(String.valueOf(id));
         typeProperty = new SimpleStringProperty(playerType.toString());
+        scoreProperty = new SimpleStringProperty(String.format(" %,.2f%%", statistics.getScore()));
+    }
+
+    public String getScoreProperty() {
+        return scoreProperty.get();
+    }
+
+    public SimpleStringProperty scorePropertyProperty() {
+        return scoreProperty;
+    }
+
+    public void setScoreProperty(String scoreProperty) {
+        this.scoreProperty.set(scoreProperty);
     }
 
     public String getName() {
@@ -129,6 +143,7 @@ public class Player {
         }
         playerWon = (numberOfCorrcetSquares == numberOfBoardSquares);
         statistics.setScore((double) numberOfCorrcetSquares / (double) numberOfBoardSquares);
+        scoreProperty.setValue(String.format(" %,.2f%%", statistics.getScore()));
     }
 
     public void printMoveHistory()
