@@ -31,7 +31,7 @@ public class MainController {
     private VBox root;
 
     @FXML
-    private TextField puzzleFilePath;
+    private Label puzzleFilePath;
 
     @FXML
     private Button loadPuzzleBtn;
@@ -117,6 +117,12 @@ public class MainController {
                     selectedStatusForMove = BoardSquare.Empty;
             }
         });
+        statusBlackRBtn.setDisable(true);
+        statusEmptyRBtn.setDisable(true);
+        statusUndecidedRBtn.setDisable(true);
+        playerClearSelectionBtn.setDisable(true);
+        playerMakeMoveBtn.setDisable(true);
+        playerUndoLastBtn.setDisable(true);
     }
 
     @FXML
@@ -132,7 +138,7 @@ public class MainController {
         fileChooser.setInitialDirectory(selectedFile.getParentFile());
         try {
             gameXmlParser = new GameBoardXmlParser(absolutePath);
-            puzzleFilePath.textProperty().setValue(absolutePath);
+            puzzleFilePath.textProperty().setValue("Puzzle File: " + absolutePath);
             startGameBtn.setDisable(false);
             this.game = new Game(gameXmlParser);
             initAndShowBoard();
@@ -153,6 +159,7 @@ public class MainController {
         boardView.setStyle("-fx-background-color: dimgray");
         Node board = boardController.getBoardUI(game.getGameBoard());
         boardView.getChildren().add(board);
+        boardView.setDisable(true);
     }
 
     @FXML
@@ -162,10 +169,16 @@ public class MainController {
 
     @FXML
     void startGame(ActionEvent event) {
-        boardController.setEnabled(true);
+        boardView.setDisable(false);
         startGameBtn.setDisable(true);
         loadPuzzleBtn.setDisable(true);
         playerMakeMoveBtn.setDisable(false);
+        statusBlackRBtn.setDisable(false);
+        statusEmptyRBtn.setDisable(false);
+        statusUndecidedRBtn.setDisable(false);
+        playerClearSelectionBtn.setDisable(false);
+        playerMakeMoveBtn.setDisable(false);
+        playerUndoLastBtn.setDisable(false);
         currentPlayerName.setText(game.getCurrentPlayer().getName());
         updatePlayerScore();
         selectedSquares = boardController.getSelectedSquares();

@@ -39,18 +39,16 @@ public class BoardController {
     private List<Square> selectedSquares;
     private int maxColConstraints;
     private int maxRowConstraints;
-    private boolean isEnabled;
 
 
-    public class ConstraintSquare extends StackPane{
-        private int row,col;
+    public class ConstraintSquare extends StackPane {
+        private int row, col;
         private Rectangle border = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
         private Text constraint = new Text();
         private boolean isColumnConstraint;
         private boolean isPerfect;
 
-        public ConstraintSquare(int x, int y, boolean isColumnConstraint, int i_constraint)
-        {
+        public ConstraintSquare(int x, int y, boolean isColumnConstraint, int i_constraint) {
             this.row = x;
             this.col = y;
             this.isColumnConstraint = isColumnConstraint;
@@ -58,7 +56,7 @@ public class BoardController {
 
             border.setFill(Color.GRAY);
 
-            if(isColumnConstraint)
+            if (isColumnConstraint)
                 this.setStyle("-fx-border-color: BLUEVIOLET; -fx-border-width: 0 1 0 1;");
             else
                 this.setStyle("-fx-border-color: BLUEVIOLET; -fx-border-width: 1 0 1 0;");
@@ -69,25 +67,26 @@ public class BoardController {
             else
                 this.constraint.setText("");
             constraint.setVisible(true);
-            constraint.setFont(Font.font("font-family: sans",11));
+            constraint.setFont(Font.font("font-family: sans", 11));
 
             getChildren().addAll(border, constraint);
             setTranslateX(row * SQUARE_SIZE);
             setTranslateY(col * SQUARE_SIZE);
         }
 
-        public void setConstraint(int i_constraint) {this.constraint.setText(Integer.toString(i_constraint));}
+        public void setConstraint(int i_constraint) {
+            this.constraint.setText(Integer.toString(i_constraint));
+        }
     }
 
-    public class Square extends StackPane{
+    public class Square extends StackPane {
         private int row, col;
         private BoardSquare squareState;
         private boolean isSelected;
         private Rectangle border = new Rectangle(SQUARE_SIZE, SQUARE_SIZE);
         private Text white = new Text();
 
-        public Square(int x, int y)
-        {
+        public Square(int x, int y) {
             this.row = x;
             this.col = y;
             this.squareState = BoardSquare.Empty;
@@ -97,7 +96,7 @@ public class BoardController {
             border.setFill(Color.WHITE);
 
             white.setText("X");
-            white.setFont(Font.font("font-family: sans",18));
+            white.setFont(Font.font("font-family: sans", 18));
             white.setVisible(false);
 
             getChildren().addAll(border, white);
@@ -109,51 +108,46 @@ public class BoardController {
             setOnMouseExited(e -> noHover());
             setOnMouseClicked(e -> selected());
         }
-        public int getRow(){return this.row;}
 
-        public int getCol(){return this.col;}
+        public int getRow() {
+            return this.row;
+        }
 
-        public void hover()
-        {
+        public int getCol() {
+            return this.col;
+        }
+
+        public void hover() {
             border.setStroke(Color.RED);
             this.toFront();
         }
 
-        public void noHover()
-        {
+        public void noHover() {
             border.setStroke(Color.BLUEVIOLET);
         }
 
-        public void selected()
-        {
-            if(!this.isSelected)
-            {
+        public void selected() {
+            if (!this.isSelected) {
                 border.setFill(Color.YELLOW);
                 isSelected = true;
                 selectedSquares.add(this);
                 this.white.setVisible(false);
-            }
-            else
-            {
+            } else {
                 this.unSelect();
             }
         }
 
-        public void unSelect()
-        {
+        public void unSelect() {
             this.isSelected = false;
             changeState(this.squareState);
             selectedSquares.remove(selectedSquares.indexOf(this));
         }
 
 
-
-        public void changeState(BoardSquare newState)
-        {
+        public void changeState(BoardSquare newState) {
             this.squareState = newState;
             this.isSelected = false;
-            switch (newState)
-            {
+            switch (newState) {
                 case Black:
                     border.setFill(Color.BLACK);
                     break;
@@ -171,9 +165,7 @@ public class BoardController {
         }
     }
 
-    public BoardController(Game i_game)
-    {
-        isEnabled = false;
+    public BoardController(Game i_game) {
         this.COLUMNS = i_game.getGameBoard().getColumns();
         this.ROWS = i_game.getGameBoard().getRows();
         this.boardGrid = new Square[ROWS][COLUMNS];
@@ -185,28 +177,19 @@ public class BoardController {
         this.selectedSquares = new ArrayList<>();
     }
 
-    public boolean isEnabled() {
-        return isEnabled;
-    }
 
-    public void setEnabled(boolean enabled) {
-        isEnabled = enabled;
-    }
-
-    public ObservableList<Square> getSelectedSquares()
-    {
+    public ObservableList<Square> getSelectedSquares() {
         ObservableList<Square> list = FXCollections.observableList(selectedSquares);
         return list;
     }
 
-    private Parent createBoardUI()
-    {
+    private Parent createBoardUI() {
         Pane boardNode = new Pane();
         Pane columnConstraintsNode = new Pane();
         Pane rowConstraintsNode = new Pane();
 
 
-        boardNode.setPrefSize((ROWS + maxRowConstraints)* SQUARE_SIZE, (COLUMNS + maxColConstraints) * SQUARE_SIZE);
+        boardNode.setPrefSize((ROWS + maxRowConstraints) * SQUARE_SIZE, (COLUMNS + maxColConstraints) * SQUARE_SIZE);
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
                 Square square = new Square(x, y);
@@ -217,7 +200,7 @@ public class BoardController {
 
         this.columnConstraintsGrid = new ConstraintSquare[ROWS][maxColConstraints];
         columnConstraintsNode.setPrefSize(ROWS * SQUARE_SIZE, maxColConstraints * SQUARE_SIZE);
-        for (int y = 0; y < maxColConstraints; y++){
+        for (int y = 0; y < maxColConstraints; y++) {
             for (int x = 0; x < ROWS; x++) {
                 ConstraintSquare colSquare = new ConstraintSquare(x, y, true, 0);
                 columnConstraintsGrid[x][y] = colSquare;
@@ -226,10 +209,10 @@ public class BoardController {
         }
         columnConstraintsNode.setTranslateY(-maxColConstraints * SQUARE_SIZE);
 
-        for (int x = 0; x < COLUMNS; x++){
+        for (int x = 0; x < COLUMNS; x++) {
             int y = maxColConstraints - 1;
             List<Constraint> constraintList = columnConstraints.get(x).getConstraints();
-            for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious();){
+            for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious(); ) {
                 Constraint constraint = iterator.previous();
                 columnConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
                 y--;
@@ -238,7 +221,7 @@ public class BoardController {
 
         this.rowConstraintsGrid = new ConstraintSquare[maxRowConstraints][COLUMNS];
         rowConstraintsNode.setPrefSize(maxRowConstraints * SQUARE_SIZE, COLUMNS * SQUARE_SIZE);
-        for (int y = 0; y < COLUMNS; y++){
+        for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < maxRowConstraints; x++) {
                 ConstraintSquare rowSquare = new ConstraintSquare(x, y, false, 0);
                 rowConstraintsGrid[x][y] = rowSquare;
@@ -248,12 +231,13 @@ public class BoardController {
         rowConstraintsNode.setTranslateX(-maxRowConstraints * SQUARE_SIZE);
         rowConstraintsNode.setTranslateY(1);
 
-        for (int y = 0; y < ROWS; y++){
+        for (int y = 0; y < ROWS; y++) {
             int x = maxRowConstraints - 1;
             List<Constraint> constraintList = rowConstraints.get(y).getConstraints();
-            for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious();){
+            for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious(); ) {
                 Constraint constraint = iterator.previous();
                 rowConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
+                System.out.println(String.format("row: %d, column:%d", x, y));
                 x--;
             }
         }
@@ -269,7 +253,7 @@ public class BoardController {
         GameBoard currentGameBoard = game.getGameBoard();
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
-                boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x,y));
+                boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x, y));
             }
         }
     }
@@ -279,16 +263,14 @@ public class BoardController {
         GameBoard currentGameBoard = gameBoard;
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
-                boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x,y));
+                boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x, y));
             }
         }
         return root;
     }
 
-    public void unSelectAllSquares()
-    {
-        for (Iterator<Square> iterator = selectedSquares.iterator(); iterator.hasNext();)
-        {
+    public void unSelectAllSquares() {
+        for (Iterator<Square> iterator = selectedSquares.iterator(); iterator.hasNext(); ) {
             Square square = iterator.next();
             square.unSelect();
             iterator.remove();
