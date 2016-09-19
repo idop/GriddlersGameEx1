@@ -1,11 +1,13 @@
 import Game.BoardSquare;
 import Game.Game;
 import Game.GameMove;
+import Game.Player.Player;
 import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -67,7 +70,7 @@ public class MainController {
     private AnchorPane playersDisplay;
 
     @FXML
-    private TableView<?> playersTableViewList;
+    private TableView<Player> playersTableViewList;
 
     @FXML
     private RadioButton statusBlackRBtn;
@@ -77,7 +80,6 @@ public class MainController {
 
     @FXML
     private RadioButton statusUndecidedRBtn;
-
 
 
     private BoardController boardController;
@@ -107,7 +109,7 @@ public class MainController {
         statusButtons.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
             @Override
             public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                if(statusBlackRBtn.isSelected())
+                if (statusBlackRBtn.isSelected())
                     selectedStatusForMove = BoardSquare.Black;
                 else if (statusEmptyRBtn.isSelected())
                     selectedStatusForMove = BoardSquare.White;
@@ -132,6 +134,9 @@ public class MainController {
             gameXmlParser = new GameBoardXmlParser(absolutePath);
             puzzleFilePath.textProperty().setValue(absolutePath);
             startGameBtn.setDisable(false);
+            this.game = new Game(gameXmlParser);
+            initAndShowBoard();
+            initPlayerTable();
         } catch (GameDefinitionsXmlParserException e) {
             Alert alert = new Alert(AlertType.ERROR);
             alert.setTitle("Error Dialog");
@@ -140,40 +145,24 @@ public class MainController {
             alert.showAndWait();
         }
 
+
+    }
+
+    private void initAndShowBoard() {
+        boardController = new BoardController(game);
+        boardView.setStyle("-fx-background-color: dimgray");
+        Node board = boardController.getBoardUI(game.getGameBoard());
+        boardView.getChildren().add(board);
     }
 
     @FXML
-    void clearSelection(ActionEvent event)
-    {
+    void clearSelection(ActionEvent event) {
         boardController.unSelectAllSquares();
     }
 
     @FXML
     void startGame(ActionEvent event) {
-        try {
-            Game game = new Game(gameXmlParser);
-            boardController = new BoardController(game);
-            boardView.setStyle("-fx-background-color: dimgray");
-            Node board = boardController.getBoardUI(game);
-            // TODO: add column constraints
-            // TODO: add row constraints
-            boardView.getChildren().add(board);
-
-            initGame(game);
-        }
-        catch (Exception ex)
-        {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setContentText(ex.getMessage());
-            alert.showAndWait();
-        }
-    }
-
-
-
-    private void initGame(Game game)
-    {
-        this.game = game;
+        boardController.setEnabled(true);
         startGameBtn.setDisable(true);
         loadPuzzleBtn.setDisable(true);
         playerMakeMoveBtn.setDisable(false);
@@ -188,23 +177,42 @@ public class MainController {
         });
     }
 
-    private void initPlayerTable()
-    {
-        //TODO: bind info to player table..
+    private void initPlayerTable() {
+        final ObservableList<Player> tableData = FXCollections.observableArrayList(game.getPlayers());
+        final int ID = 0;
+        final int Type = 1;
+        final int NAME = 2;
+        playersTableViewList.getColumns().clear();
+        playersTableViewList.setEditable(false);
+        TableColumn idCol = new TableColumn("ID");
+        idCol.setMinWidth(100);
+        idCol.setCellValueFactory(
+                new PropertyValueFactory<Player, String>("idProperty"));
+        playersTableViewList.getColumns().clear();
+        TableColumn typeCol = new TableColumn("Type");
+        typeCol.setMinWidth(100);
+        typeCol.setCellValueFactory(
+                new PropertyValueFactory<Player, String>("typeProperty"));
+        playersTableViewList.getColumns().clear();
+        TableColumn nameCol = new TableColumn("Name");
+        nameCol.setMinWidth(100);
+        nameCol.setCellValueFactory(
+                new PropertyValueFactory<Player, String>("nameProperty"));
+
+        playersTableViewList.setItems(tableData);
+        playersTableViewList.getColumns().addAll(idCol, typeCol, nameCol);
+
     }
 
-    public void updatePlayerScore()
-    {
+    public void updatePlayerScore() {
         currentPlayerScore.setText(game.getCurrentPlayer().getScoreString());
     }
 
     @FXML
-    private void makeMove(ActionEvent event)
-    {
+    private void makeMove(ActionEvent event) {
         PlayerTurn turn = new PlayerTurn();
         selectedSquares = boardController.getSelectedSquares();
-        for (Iterator<BoardController.Square> iterator = selectedSquares.iterator(); iterator.hasNext();)
-        {
+        for (Iterator<BoardController.Square> iterator = selectedSquares.iterator(); iterator.hasNext(); ) {
             BoardController.Square square = iterator.next();
             int row = square.getRow();
             int col = square.getCol();

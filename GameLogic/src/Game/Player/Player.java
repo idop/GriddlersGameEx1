@@ -2,6 +2,7 @@ package Game.Player;
 
 
 import Game.*;
+import javafx.beans.property.SimpleStringProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,10 @@ public class Player {
     private GameBoard gameBoard;
     private boolean playerWon = false;
     private PlayerGameStatistics statistics;
+    private final SimpleStringProperty nameProperty;
+    private final SimpleStringProperty idProperty;
+    private final SimpleStringProperty typeProperty;
+
 
     public Player(String name, PlayerType playerType, int id, GameBoard gameBoard) {
         this.name = name;
@@ -31,6 +36,9 @@ public class Player {
         statistics = new PlayerGameStatistics();
         this.gameBoard = gameBoard;
         numberOfBoardSquares = gameBoard.getNumberOfSquares();
+        nameProperty = new SimpleStringProperty(name);
+        idProperty = new SimpleStringProperty(String.valueOf(id));
+        typeProperty = new SimpleStringProperty(playerType.toString());
     }
 
     public String getName() {
@@ -134,4 +142,17 @@ public class Player {
     public String getScoreString() {
         return statistics.getScoreAsString();
     }
+
+    public String getNameProperty() {
+        return nameProperty.get();
+    }
+
+    public String getIdProperty() {
+        return idProperty.get();
+    }
+
+    public String getTypeProperty() {
+        return typeProperty.get();
+    }
+
 }

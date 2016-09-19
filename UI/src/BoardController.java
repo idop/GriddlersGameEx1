@@ -1,18 +1,19 @@
 
+import Game.BoardSquare;
+import Game.Game;
+import Game.GameBoard;
+import GameXmlParser.Schema.Constraint;
 import GameXmlParser.Schema.Constraints;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import Game.Game;
-import Game.BoardSquare;
-import Game.GameBoard;
-import GameXmlParser.Schema.*;
-import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,12 +30,17 @@ public class BoardController {
     private static final int SQUARE_SIZE = 20;
     private static int COLUMNS;
     private static int ROWS;
-    private Game game;
+    private final List<Constraints> rowConstraints;
+    private final List<Constraints> columnConstraints;
     private Square[][] boardGrid;
     private ConstraintSquare[][] columnConstraintsGrid;
     private ConstraintSquare[][] rowConstraintsGrid;
     private Parent root;
     private List<Square> selectedSquares;
+    private int maxColConstraints;
+    private int maxRowConstraints;
+    private boolean isEnabled;
+
 
     public class ConstraintSquare extends StackPane{
         private int row,col;
@@ -167,13 +173,24 @@ public class BoardController {
 
     public BoardController(Game i_game)
     {
-        this.game = i_game;
-        this.COLUMNS = game.getGameBoard().getColumns();
-        this.ROWS = game.getGameBoard().getRows();
+        isEnabled = false;
+        this.COLUMNS = i_game.getGameBoard().getColumns();
+        this.ROWS = i_game.getGameBoard().getRows();
         this.boardGrid = new Square[ROWS][COLUMNS];
+        maxColConstraints = i_game.getMaxColumnConstraints();
+        maxRowConstraints = i_game.getMaxRowConstraints();
+        rowConstraints = i_game.getRowConstraints();
+        columnConstraints = i_game.getColumnConstraints();
         this.root = createBoardUI();
         this.selectedSquares = new ArrayList<>();
+    }
 
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 
     public ObservableList<Square> getSelectedSquares()
@@ -187,8 +204,7 @@ public class BoardController {
         Pane boardNode = new Pane();
         Pane columnConstraintsNode = new Pane();
         Pane rowConstraintsNode = new Pane();
-        int maxColConstraints = game.getMaxColumnConstraints();
-        int maxRowConstraints = game.getMaxRowConstraints();
+
 
         boardNode.setPrefSize((ROWS + maxRowConstraints)* SQUARE_SIZE, (COLUMNS + maxColConstraints) * SQUARE_SIZE);
         for (int y = 0; y < COLUMNS; y++) {
@@ -212,7 +228,7 @@ public class BoardController {
 
         for (int x = 0; x < COLUMNS; x++){
             int y = maxColConstraints - 1;
-            List<Constraint> constraintList = game.getColumnConstraint(x).getConstraints();
+            List<Constraint> constraintList = columnConstraints.get(x).getConstraints();
             for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious();){
                 Constraint constraint = iterator.previous();
                 columnConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
@@ -234,7 +250,7 @@ public class BoardController {
 
         for (int y = 0; y < ROWS; y++){
             int x = maxRowConstraints - 1;
-            List<Constraint> constraintList = game.getRowConstraint(y).getConstraints();
+            List<Constraint> constraintList = rowConstraints.get(y).getConstraints();
             for (ListIterator<Constraint> iterator = constraintList.listIterator(constraintList.size()); iterator.hasPrevious();){
                 Constraint constraint = iterator.previous();
                 rowConstraintsGrid[x][y].setConstraint(constraint.getConstraint());
@@ -259,8 +275,8 @@ public class BoardController {
     }
 
 
-    public Node getBoardUI(Game game) {
-        GameBoard currentGameBoard = game.getGameBoard();
+    public Node getBoardUI(GameBoard gameBoard) {
+        GameBoard currentGameBoard = gameBoard;
         for (int y = 0; y < COLUMNS; y++) {
             for (int x = 0; x < ROWS; x++) {
                 boardGrid[x][y].changeState(currentGameBoard.getBoardSquare(x,y));

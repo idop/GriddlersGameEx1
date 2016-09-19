@@ -46,6 +46,19 @@ public class Game {
         }
     }
 
+
+    public List<Player> getPlayers() {
+        return players;
+    }
+
+
+    public List<Constraints> getRowConstraints() {
+        return rowConstraints;
+    }
+
+    public List<Constraints> getColumnConstraints() {
+        return columnConstraints;
+    }
     public GameType getGameType() {
         return gameType;
     }
