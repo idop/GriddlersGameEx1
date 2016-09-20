@@ -7,117 +7,103 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TitledPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<ScrollPane xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
-   <content>
-      <VBox fx:id="root">
+
+<BorderPane prefHeight="886.0" prefWidth="1366.0" xmlns="http://javafx.com/javafx/8.0.65" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MainController">
+   <top>
+      <HBox prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <HBox prefHeight="100.0" prefWidth="200.0">
-               <children>
-                   <Button fx:id="loadPuzzleBtn" mnemonicParsing="false" onAction="#loadXmlFile" prefHeight="27.0" prefWidth="150.0" text="Load" HBox.hgrow="NEVER">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin></Button>
-                   <Button fx:id="startGameBtn" mnemonicParsing="false" onAction="#startGame" prefHeight="27.0" prefWidth="151.0" text="Start" HBox.hgrow="NEVER">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin></Button>
-                   <Label fx:id="puzzleFilePath">
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-                  <Pane prefHeight="100.0" prefWidth="250.0" HBox.hgrow="ALWAYS" />
-                   <Label fx:id="ttlMovesLabel">
-                     <font>
-                        <Font size="36.0" />
-                     </font>
-                     <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-                     </HBox.margin>
-                  </Label>
-               </children>
-            </HBox>
-            <SplitPane maxHeight="768.0" maxWidth="1366.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="768.0" prefWidth="1366.0">
-               <items>
-                  <SplitPane dividerPositions="0.25">
-                    <items>
-                        <ScrollPane prefWidth="401.0">
-                           <content>
-                            <AnchorPane fx:id="playPanel" maxWidth="335.0" minHeight="0.0" minWidth="0.0" prefHeight="766.0" prefWidth="335.0">
-                                 <children>
-                                    <Label layoutX="7.0" layoutY="16.0" text="Player:" AnchorPane.leftAnchor="7.0" AnchorPane.topAnchor="16.0" />
-                                    <Label layoutX="7.0" layoutY="40.0" text="Score:" AnchorPane.leftAnchor="7.0" />
-                                    <Label layoutX="10.0" layoutY="134.0" text="Comment:" AnchorPane.leftAnchor="10.0" />
-                                    <TextArea fx:id="moveComment" layoutX="9.0" layoutY="151.0" prefHeight="74.0" prefWidth="314.0" promptText="TYPE MOVE COMMENT HERE" />
-                                     <Label fx:id="currentPlayerScore" layoutX="57.0" layoutY="40.0" />
-                                     <Label fx:id="currentPlayerName" layoutX="56.0" layoutY="17.0" />
-                                    <Button fx:id="playerClearSelectionBtn" layoutX="7.0" layoutY="235.0" mnemonicParsing="false" onAction="#clearSelection" style="-fx-background-color: lightgray;" text="Clear selection" />
-                                     <Button fx:id="playerUndoLastBtn" layoutX="127.0" layoutY="235.0" mnemonicParsing="false" onAction="#undoTurn" style="-fx-background-color: lightgray;" text="Undo Last" />
-                                    <Button fx:id="playerMakeMoveBtn" layoutX="219.0" layoutY="235.0" mnemonicParsing="false" onAction="#makeMove" style="-fx-background-color: LightGreen;" text="Make Move" />
-                                    <Accordion layoutX="76.0" layoutY="275.0" />
-                                  <TitledPane fx:id="playerMoveHistory" animated="false" layoutX="1.0" layoutY="321.0" prefHeight="180.0" prefWidth="337.0" text="Move history">
-                                       <content>
-                                          <ListView fx:id="moveList" prefHeight="200.0" prefWidth="335.0" />
-                                       </content>
-                                  </TitledPane>
-                                    <RadioButton fx:id="statusBlackRBtn" layoutX="11.0" layoutY="103.0" mnemonicParsing="false" text="Black" />
-                                    <RadioButton fx:id="statusEmptyRBtn" layoutX="82.0" layoutY="103.0" mnemonicParsing="false" text="Empty" />
-                                    <RadioButton fx:id="statusUndecidedRBtn" layoutX="155.0" layoutY="102.0" mnemonicParsing="false" text="Undecided" />
-                                    <Accordion layoutX="122.0" layoutY="655.0" />
-                                    <Button fx:id="endRoundBtn" layoutX="58.0" layoutY="277.0" mnemonicParsing="false" onAction="#endRound" prefHeight="27.0" prefWidth="205.0" style="-fx-background-color: Pink;" text="End Round" textAlignment="CENTER" />
-                                    <Label layoutX="7.0" layoutY="66.0" text="Turn:" />
-                                     <Label fx:id="currentTurnLabel" layoutX="52.0" layoutY="66.0" />
-                                    <TextArea fx:id="moveDescription" layoutX="11.0" layoutY="524.0" prefHeight="200.0" prefWidth="314.0" />
-                                 </children>
-                              </AnchorPane>
-                           </content>
-                        </ScrollPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0">
-                           <children>
-                              <SplitPane dividerPositions="0.6548672566371682" layoutX="-14.0" prefHeight="766.0" prefWidth="935.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                                <items>
-                                    <ScrollPane prefHeight="764.0" prefWidth="666.0">
-                                       <content>
-                                          <StackPane fx:id="boardView" minHeight="764.0" minWidth="662.0" />
-                                       </content>
-                                    </ScrollPane>
-                                    <ScrollPane prefHeight="764.0" prefWidth="341.0">
-                                       <content>
-                                        <AnchorPane fx:id="playersDisplay" maxWidth="345.0" minHeight="0.0" minWidth="0.0" prefHeight="764.0" prefWidth="364.0">
-                                             <children>
-                                                <Label layoutX="3.0" layoutY="11.0" text="Players list:" />
-                                                <TableView fx:id="playersTableViewList" layoutX="2.0" layoutY="64.0" prefHeight="200.0" prefWidth="337.0">
-                                                  <columns>
-                                                    <TableColumn prefWidth="75.0" text="ID" />
-                                                    <TableColumn prefWidth="75.0" text="Type" />
-                                                      <TableColumn prefWidth="127.0" text="Player Name" />
-                                                  </columns>
-                                                </TableView>
-                                             </children>
-                                          </AnchorPane>
-                                       </content>
-                                    </ScrollPane>
-                                </items>
-                              </SplitPane>
-                           </children>
-                        </AnchorPane>
-                    </items>
-                  </SplitPane>
-               </items>
-            </SplitPane>
+             <Button fx:id="loadPuzzleBtn" mnemonicParsing="false" onAction="#loadXmlFile" prefHeight="27.0" prefWidth="150.0" text="Load" HBox.hgrow="NEVER">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+             <Button fx:id="startGameBtn" mnemonicParsing="false" onAction="#startGame" prefHeight="27.0" prefWidth="151.0" text="Start" HBox.hgrow="NEVER">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+             <Label fx:id="puzzleFilePath">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
+            <Pane prefHeight="100.0" prefWidth="250.0" HBox.hgrow="ALWAYS" />
+             <Label fx:id="ttlMovesLabel">
+               <font>
+                  <Font size="36.0" />
+               </font>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Label>
          </children>
-      </VBox>
-   </content>
-</ScrollPane>
+      </HBox>
+   </top>
+   <left>
+      <Pane>
+         <children>
+            <Label layoutX="6.0" text="Player:" />
+            <Label layoutX="6.0" layoutY="24.0" text="Score:" />
+            <Label layoutX="9.0" layoutY="118.0" text="Comment:" />
+            <TextArea fx:id="moveComment" layoutX="8.0" layoutY="135.0" prefHeight="74.0" prefWidth="314.0" promptText="TYPE MOVE COMMENT HERE" />
+             <Label fx:id="currentPlayerScore" layoutX="56.0" layoutY="24.0" />
+             <Label fx:id="currentPlayerName" layoutX="55.0" layoutY="1.0" />
+            <Button fx:id="playerClearSelectionBtn" layoutX="6.0" layoutY="219.0" mnemonicParsing="false" onAction="#clearSelection" style="-fx-background-color: lightgray;" text="Clear selection" />
+             <Button fx:id="playerUndoLastBtn" layoutX="126.0" layoutY="219.0" mnemonicParsing="false" onAction="#undoTurn" style="-fx-background-color: lightgray;" text="Undo Last" />
+            <Button fx:id="playerMakeMoveBtn" layoutX="218.0" layoutY="219.0" mnemonicParsing="false" onAction="#makeMove" style="-fx-background-color: LightGreen;" text="Make Move" />
+            <Accordion layoutX="75.0" layoutY="259.0" />
+            <RadioButton fx:id="statusBlackRBtn" layoutX="10.0" layoutY="87.0" mnemonicParsing="false" text="Black" />
+            <RadioButton fx:id="statusEmptyRBtn" layoutX="81.0" layoutY="87.0" mnemonicParsing="false" text="Empty" />
+            <RadioButton fx:id="statusUndecidedRBtn" layoutX="154.0" layoutY="86.0" mnemonicParsing="false" text="Undecided" />
+            <Button fx:id="endRoundBtn" layoutX="57.0" layoutY="261.0" mnemonicParsing="false" onAction="#endRound" prefHeight="27.0" prefWidth="205.0" style="-fx-background-color: Pink;" text="End Round" textAlignment="CENTER" />
+            <Label layoutX="6.0" layoutY="50.0" text="Turn:" />
+             <Label fx:id="currentTurnLabel" layoutX="51.0" layoutY="50.0" />
+            <TextArea fx:id="moveDescription" layoutX="10.0" layoutY="508.0" prefHeight="200.0" prefWidth="314.0" />
+          <TitledPane fx:id="playerMoveHistory" animated="false" layoutY="305.0" prefHeight="180.0" prefWidth="337.0" text="Move history">
+               <content>
+                  <ListView fx:id="moveList" prefHeight="200.0" prefWidth="335.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                     </padding>
+                  </ListView>
+               </content>
+          </TitledPane>
+         </children>
+      </Pane>
+   </left>
+   <center>
+      <ScrollPane fx:id="boardScrollPane" BorderPane.alignment="CENTER">
+         <content>
+            <Pane fx:id="boardWrapper" style="-fx-background-color: dimgray;">
+               <children>
+                  <StackPane fx:id="boardView" />
+               </children>
+            </Pane>
+         </content>
+      </ScrollPane>
+   </center>
+   <right>
+      <Pane>
+         <children>
+            <Label layoutX="36.0" layoutY="6.0" text="Players list:" />
+            <TableView fx:id="playersTableViewList" layoutY="47.0">
+              <columns>
+                <TableColumn prefWidth="75.0" text="ID" />
+                <TableColumn prefWidth="75.0" text="Type" />
+                  <TableColumn prefWidth="127.0" text="Player Name" />
+              </columns>
+            </TableView>
+         </children>
+      </Pane>
+   </right>
+</BorderPane>
