@@ -24,6 +24,7 @@ public class Player {
     private GameBoard gameBoard;
     private boolean playerWon = false;
     private PlayerGameStatistics statistics;
+    private int turnNumber = 1;
     private final SimpleStringProperty nameProperty;
     private final SimpleStringProperty idProperty;
     private final SimpleStringProperty typeProperty;
@@ -102,7 +103,7 @@ public class Player {
 
     public void undoTurn(SolutionBoard solution) throws PlayerTurnException {
         revertStep(solution, undoList, undoExceptionMessage);
-        statistics.incNumberOfUndoTurns();
+        turnNumber--;
     }
 
     public BoardSquare[][] getBoard() {
@@ -110,8 +111,9 @@ public class Player {
     }
 
     public void doTurn(PlayerTurn turn, SolutionBoard solution) {
+        turn.setTurnNumber(turnNumber);
+        turnNumber++;
         undoList.add(doActualTrun(turn, solution));
-        statistics.incNumberOfTurns();
     }
 
     public boolean checkIfPlayerWon() {

@@ -2,7 +2,6 @@ package Game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by ido on 18/08/2016.
@@ -11,6 +10,11 @@ public class PlayerTurn {
     private List<GameMove> moves;
 
     private String comment = "";
+    private int turnNumber;
+
+    public void setTurnNumber(int turnNumber) {
+        this.turnNumber = turnNumber;
+    }
 
     public PlayerTurn() {
         this.moves = new ArrayList<GameMove>();
@@ -66,6 +70,6 @@ public class PlayerTurn {
     }
 
     public String getListViewName() {
-        return "turn" + Integer.toString(new Random().nextInt());
+        return "Turn " + Integer.toString(turnNumber);
     }
 }
