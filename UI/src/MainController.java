@@ -6,6 +6,7 @@ import Game.Player.PlayerType;
 import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -197,13 +198,8 @@ public class MainController {
         playerClearSelectionBtn.setDisable(false);
         playerMakeMoveBtn.setDisable(false);
         updatePlayer(game.getCurrentPlayer());
-        selectedSquares = boardController.getSelectedSquares();
-        selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
-            @Override
-            public void onChanged(Change<? extends BoardController.Square> c) {
-                System.out.println("selectedList change!");
-            }
-        });
+        initMoveList();
+        initUnselectBtn();
         if (game.getCurrentPlayer().getPlayerType().equals(PlayerType.Computer)) {
             makeComputerTurn();
         }
@@ -346,11 +342,40 @@ public class MainController {
     }
 
     private void updatePlayerMoveList(Player player) {
+
         ObservableList<PlayerTurn> turnList = player.getUndoList();
-        moveList.setItems(turnList);
+        if (turnList != null)
+            moveList.setItems(turnList);
+        /*else
+        {
+            moveList.getItems().clear();
+            moveDescription.setText("");
+        }
+        */
 
     }
 
+    private void initMoveList(){
+        moveList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<PlayerTurn>() {
+            @Override
+            public void changed(ObservableValue<? extends PlayerTurn> observable, PlayerTurn oldValue, PlayerTurn newValue) {
+                moveDescription.setText(newValue.getTurnString());
+            }
+        });
+    }
+
+    private void initUnselectBtn() {
+        selectedSquares = boardController.getSelectedSquares();
+        selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
+            @Override
+            public void onChanged(Change<? extends BoardController.Square> c) {
+                if (selectedSquares.size() > 0)
+                    playerClearSelectionBtn.setDisable(true);
+                else
+                    playerClearSelectionBtn.setDisable(false);
+            }
+        });
+    }
     @FXML
     private void undoTurn(ActionEvent event) {
         try {

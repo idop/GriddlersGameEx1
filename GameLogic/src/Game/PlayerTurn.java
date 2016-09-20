@@ -45,6 +45,18 @@ public class PlayerTurn {
         System.out.println();
     }
 
+    public String getTurnString()
+    {
+        String turnString = "\n";
+        turnString += "Turn type: " + moves.get(0).getNewBoardSquare().toString() + "\n";
+        turnString += "Turn comment: \n" + this.comment + "\n";
+        turnString += "---------------------------------\n";
+        for (GameMove move: this.moves) {
+            turnString += "Row: " + Integer.toString(move.getRow()) + " Column: " + Integer.toString(move.getColumn()) + "\n";
+        }
+        return turnString;
+    }
+
     public void setComment(String comment) {
         this.comment = comment;
     }
