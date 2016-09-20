@@ -96,6 +96,9 @@ public class MainController {
     @FXML
     private TextArea moveDescription;
 
+    @FXML
+    private TextArea moveComment;
+
     private BoardController boardController;
     private Stage primaryStage;
     private GameBoardXmlParser gameXmlParser;
@@ -392,7 +395,7 @@ public class MainController {
 
     private PlayerTurn getPlayerTurn() {
         PlayerTurn turn = new PlayerTurn();
-        turn.setComment(moveDescription.getText());
+        turn.setComment(moveComment.getText());
         selectedSquares = boardController.getSelectedSquares();
         for (Iterator<BoardController.Square> iterator = selectedSquares.iterator(); iterator.hasNext(); ) {
             BoardController.Square square = iterator.next();

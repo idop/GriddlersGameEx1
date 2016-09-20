@@ -9,7 +9,7 @@ import java.util.List;
 public class PlayerTurn {
     private List<GameMove> moves;
 
-    private String comment;
+    private String comment = "";
 
     public PlayerTurn() {
         this.moves = new ArrayList<GameMove>();
