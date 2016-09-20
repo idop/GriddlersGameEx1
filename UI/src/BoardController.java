@@ -16,7 +16,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -140,7 +139,6 @@ public class BoardController {
         public void unSelect() {
             this.isSelected = false;
             changeState(this.squareState);
-            selectedSquares.remove(selectedSquares.indexOf(this));
         }
 
 
@@ -270,10 +268,8 @@ public class BoardController {
     }
 
     public void unSelectAllSquares() {
-        for (Iterator<Square> iterator = selectedSquares.iterator(); iterator.hasNext(); ) {
-            Square square = iterator.next();
-            square.unSelect();
-            iterator.remove();
-        }
+        selectedSquares.forEach(Square::unSelect);
+        selectedSquares.clear();
+
     }
 }
