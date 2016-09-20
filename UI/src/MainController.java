@@ -359,7 +359,8 @@ public class MainController {
         moveList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<PlayerTurn>() {
             @Override
             public void changed(ObservableValue<? extends PlayerTurn> observable, PlayerTurn oldValue, PlayerTurn newValue) {
-                moveDescription.setText(newValue.getTurnString());
+                if(newValue != null)
+                    moveDescription.setText(newValue.getTurnString());
             }
         });
     }

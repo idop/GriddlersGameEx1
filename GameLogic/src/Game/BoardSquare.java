@@ -11,12 +11,12 @@ public enum BoardSquare {
         String res;
         switch (this) {
             case Black:
-                return " o ";
+                return " BLACK ";
             case White:
-                return " x ";
+                return " WHITE ";
             case Empty:
             default:
-                return "   ";
+                return " EMPTY  ";
         }
     }
 }

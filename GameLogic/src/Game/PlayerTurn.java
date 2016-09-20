@@ -47,7 +47,7 @@ public class PlayerTurn {
 
     public String getTurnString()
     {
-        String turnString = "\n";
+        String turnString = "";
         turnString += "Turn type: " + moves.get(0).getNewBoardSquare().toString() + "\n";
         turnString += "Turn comment: \n" + this.comment + "\n";
         turnString += "---------------------------------\n";
