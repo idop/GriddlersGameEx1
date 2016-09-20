@@ -8,7 +8,6 @@ import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -202,12 +201,7 @@ public class MainController {
         playerMakeMoveBtn.setDisable(false);
         updatePlayer(game.getCurrentPlayer());
         selectedSquares = boardController.getSelectedSquares();
-        selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
-            @Override
-            public void onChanged(Change<? extends BoardController.Square> c) {
-                System.out.println("selectedList change!");
-            }
-        });
+
         if (game.getCurrentPlayer().getPlayerType().equals(PlayerType.Computer)) {
             makeComputerTurn();
         }
