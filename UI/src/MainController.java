@@ -25,7 +25,6 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.util.Iterator;
-import java.util.List;
 
 public class MainController {
 
@@ -145,6 +144,7 @@ public class MainController {
         playerClearSelectionBtn.setDisable(true);
         playerMakeMoveBtn.setDisable(true);
         playerUndoLastBtn.setDisable(true);
+        playersTableViewList.setDisable(true);
     }
 
     @FXML
@@ -201,7 +201,6 @@ public class MainController {
         statusUndecidedRBtn.setDisable(false);
         playerClearSelectionBtn.setDisable(false);
         playerMakeMoveBtn.setDisable(false);
-        playerUndoLastBtn.setDisable(false);
         updatePlayer();
         selectedSquares = boardController.getSelectedSquares();
         selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
@@ -248,6 +247,37 @@ public class MainController {
         playersTableViewList.setItems(tableData);
         playersTableViewList.getColumns().addAll(idCol, typeCol, nameCol, scoreCol);
 
+        playersTableViewList.getSelectionModel().selectedItemProperty().addListener(this::onPlayerSelect);
+
+    }
+
+    public void onPlayerSelect(ObservableValue<? extends Player> obs, Player oldSelection, Player newSelection) {
+        if (newSelection != null) {
+            Player selectedPlayer = playersTableViewList.getSelectionModel().getSelectedItem();
+            if (!game.isGameEnded()) {
+                if (selectedPlayer.getPlayerType().equals(PlayerType.Computer)) {
+                    boardController.redrawBoardUI(selectedPlayer.getGameBoard());
+                    boardView.setDisable(true);
+                    updatePlayerMoveList(selectedPlayer);
+                } else {
+                    if (game.getCurrentPlayer().equals(selectedPlayer)) {
+                        boardController.redrawBoardUI(selectedPlayer.getGameBoard());
+                        boardView.setDisable(false);
+                        updatePlayerMoveList(selectedPlayer);
+                    } else {
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error Dialog");
+                        alert.setHeaderText("Invalid selection");
+                        alert.setContentText("Cannot peek to a human player board");
+                        alert.showAndWait();
+                    }
+                }
+            } else {
+                boardController.redrawBoardUI(selectedPlayer.getGameBoard());
+                boardView.setDisable(true);
+                updatePlayerMoveList(selectedPlayer);
+            }
+        }
     }
 
     public void updatePlayer() {
@@ -257,12 +287,8 @@ public class MainController {
 
     @FXML
     private void makeMove(ActionEvent event) {
-        makeHumenPlayerMove();
-    }
+        makeHumanPlayerMove();
 
-    private void makeMultiPlayerMove() {
-        makeHumenPlayerMove();
-        //Todo update Move Label
     }
 
     private void makeComputerTurn() {
@@ -287,8 +313,9 @@ public class MainController {
             endCurrentGame();
         } else {
             boardController.redrawBoardUI(game.getGameBoard());
-            updatePlayer(); //TODO: check why player score is not updated
+            updatePlayer();
             currentMoveNumber = 1;
+            updatePlayerMoveList(game.getCurrentPlayer());
         }
 
     }
@@ -298,7 +325,7 @@ public class MainController {
 
     }
 
-    private void makeHumenPlayerMove() {
+    private void makeHumanPlayerMove() {
         PlayerTurn turn = getPlayerTurn();
         doTurn(turn);
         if (currentMoveNumber == MAX_NUMBER_OF_TURNS_PER_ROUND) {
@@ -306,27 +333,37 @@ public class MainController {
         } else {
             currentMoveNumber++;
         }
+        playerUndoLastBtn.setDisable(false);
 
     }
 
     private void doTurn(PlayerTurn turn) {
         game.doPlayerTurn(turn);
         boardController.redrawBoardUI(game.getGameBoard());
-        updatePlayerMoveList();
+        updatePlayerMoveList(game.getCurrentPlayer());
         updatePlayer(); //TODO: check why player score is not updated
     }
 
-    private void updatePlayerMoveList(){
-        ObservableList<PlayerTurn> turnList = game.getCurrentPlayer().getUndoList();
+    private void updatePlayerMoveList(Player player) {
+        moveList.getItems().clear();
+        ObservableList<PlayerTurn> turnList = player.getUndoList();
         moveList.setItems(turnList);
-        for (PlayerTurn player: turnList) {
 
-        }
     }
 
     @FXML
-    private void undoTurn(ActionEvent event){
-        //TODO: implement undoTurn()..
+    private void undoTurn(ActionEvent event) {
+        try {
+            game.undoTurn();
+            updatePlayerMoveList(game.getCurrentPlayer());
+            currentMoveNumber = Math.max(0, currentMoveNumber - 1);
+            if (game.getCurrentPlayer().getUndoList().size() == 0) {
+                playerUndoLastBtn.setDisable(true);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

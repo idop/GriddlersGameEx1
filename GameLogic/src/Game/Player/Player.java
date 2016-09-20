@@ -174,4 +174,19 @@ public class Player {
         return typeProperty.get();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Player)) return false;
+
+        Player player = (Player) o;
+
+        return id == player.id;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return id;
+    }
 }
