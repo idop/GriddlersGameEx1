@@ -6,8 +6,10 @@ import Game.Player.PlayerType;
 import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -104,7 +106,6 @@ public class MainController {
     private final ToggleGroup statusButtons = new ToggleGroup();
     private boolean isGameFinished = false;
     private int currentMoveNumber = 1;
-    private Node boardUI;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -174,11 +175,8 @@ public class MainController {
     private void initAndShowBoard() {
         boardController = new BoardController(game);
         boardView.setStyle("-fx-background-color: dimgray");
-        if (boardView.getChildren().contains(boardUI)) {
-            boardView.getChildren().remove(boardUI);
-        }
-        boardUI = boardController.getBoardUI(game.getGameBoard());
-        boardView.getChildren().add(boardUI);
+        Node board = boardController.getBoardUI(game.getGameBoard());
+        boardView.getChildren().add(board);
         boardView.setDisable(true);
     }
 
@@ -200,8 +198,8 @@ public class MainController {
         playerClearSelectionBtn.setDisable(false);
         playerMakeMoveBtn.setDisable(false);
         updatePlayer(game.getCurrentPlayer());
-        selectedSquares = boardController.getSelectedSquares();
-
+        initMoveList();
+        initUnselectBtn();
         if (game.getCurrentPlayer().getPlayerType().equals(PlayerType.Computer)) {
             makeComputerTurn();
         }
@@ -344,11 +342,36 @@ public class MainController {
     }
 
     private void updatePlayerMoveList(Player player) {
-        ObservableList<PlayerTurn> turnList = player.getUndoList();
-        moveList.setItems(turnList);
 
+        ObservableList<PlayerTurn> turnList = player.getUndoList();
+        if (turnList != null)
+            moveList.setItems(turnList);
     }
 
+    private void initMoveList(){
+        moveList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<PlayerTurn>() {
+            @Override
+            public void changed(ObservableValue<? extends PlayerTurn> observable, PlayerTurn oldValue, PlayerTurn newValue) {
+                if(newValue != null)
+                    moveDescription.setText(newValue.getTurnString());
+                else
+                    moveDescription.setText("");
+            }
+        });
+    }
+
+    private void initUnselectBtn() {
+        selectedSquares = boardController.getSelectedSquares();
+        selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
+            @Override
+            public void onChanged(Change<? extends BoardController.Square> c) {
+                if (selectedSquares.size() > 0)
+                    playerClearSelectionBtn.setDisable(true);
+                else
+                    playerClearSelectionBtn.setDisable(false);
+            }
+        });
+    }
     @FXML
     private void undoTurn(ActionEvent event) {
         try {
@@ -369,6 +392,7 @@ public class MainController {
 
     private PlayerTurn getPlayerTurn() {
         PlayerTurn turn = new PlayerTurn();
+        turn.setComment(moveDescription.getText());
         selectedSquares = boardController.getSelectedSquares();
         for (Iterator<BoardController.Square> iterator = selectedSquares.iterator(); iterator.hasNext(); ) {
             BoardController.Square square = iterator.next();

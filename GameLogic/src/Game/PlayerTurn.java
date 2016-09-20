@@ -49,10 +49,13 @@ public class PlayerTurn {
     {
         String turnString = "";
         turnString += "Turn type: " + moves.get(0).getNewBoardSquare().toString() + "\n";
-        turnString += "Turn comment: \n" + this.comment + "\n";
+        if (this.comment.equals(""))
+            turnString += "Turn comment: There was no comment left\n";
+        else
+            turnString += "Turn comment: " + this.comment + "\n";
         turnString += "---------------------------------\n";
         for (GameMove move: this.moves) {
-            turnString += "Row: " + Integer.toString(move.getRow()) + " Column: " + Integer.toString(move.getColumn()) + "\n";
+            turnString += "Row: " + Integer.toString(move.getRow() + 1) + " Column: " + Integer.toString(move.getColumn() + 1) + "\n";
         }
         return turnString;
     }
