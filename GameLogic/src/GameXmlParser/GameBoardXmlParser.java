@@ -1,5 +1,6 @@
 package GameXmlParser;
 
+import Game.BoardSquare;
 import Game.GameBoard;
 import Game.Player.ComputerPlayer;
 import Game.Player.HumenPlayer;
@@ -28,25 +29,28 @@ import java.util.List;
  */
 public class GameBoardXmlParser {
     private static final String JAXB_XML_GAME_PACKAGE_NAME = "GameXmlParser.Schema.Generated";
-    private final String illegalXmlFileMessage = "Game Definition Xml File is illegal";
-    private final String sliceIsDefinedMoreThenOneTime = "Slice with orientation %s and index %d is defined more then one time";
-    private final String sliceIsDefinedWithIllegalId = "Slice with orientation %s and index %d exceeds the maximum index  of %d";
-    private final String unknownSliceOrentation = "Unknown slice orientation of %s is defined";
-    private final String invalidGameTypeMessage = "Defined Game type of %s is not a valid Game Type";
-    private final String invalidBlocksDefinition = "Invalid Blocks Definition at Slice with orientation %s and index %d";
-    private final String invalidSlicesDefinition = "Invalid slices definition";
-    private final String invalidSliceDefinition = "Invalid slice definition";
-    private final String NumberDefinitionExceedsMaximum = "The sum the number constraints inside the Slice with orientation %s  and index %d exceeds the maximum allowed Of %d ";
-    private final String invalidNumberFormatDefinition = "Invalid Number Definition inside a Slice with orientation %s and index %d ";
-    private final String solutionIsNotDefined = "Solution is not defined in the provided xml file";
-    private final String squareIsNotDefined = "a square is not defined correctly in the provided xml file";
-    private final String orientationRow = "row";
-    private final String orientationColumn = "column";
-    private final String InvalidConstraintsOnSolution = "Solution has a %s Constraint that does not match the constraint defined in the xml file";
-    private final String invlaidMultiplayersMoves = "Invalid Number Of Moves entered %s";
-    private final int minIndexValue = 0;
-    private final int maxDimension = 100;
-    private final int minDimension = 10;
+    private static final String DEFAULT_PLAYER = "default Player";
+    private static final String illegalXmlFileMessage = "Game Definition Xml File is illegal";
+    private static final String sliceIsDefinedMoreThenOneTime = "Slice with orientation %s and index %d is defined more then one time";
+    private static final String sliceIsDefinedWithIllegalId = "Slice with orientation %s and index %d exceeds the maximum index  of %d";
+    private static final String unknownSliceOrentation = "Unknown slice orientation of %s is defined";
+    private static final String invalidGameTypeMessage = "Defined Game type of %s is not a valid Game Type";
+    private static final String invalidBlocksDefinition = "Invalid Blocks Definition at Slice with orientation %s and index %d";
+    private static final String invalidSlicesDefinition = "Invalid slices definition";
+    private static final String invalidSliceDefinition = "Invalid slice definition";
+    private static final String NumberDefinitionExceedsMaximum = "The sum the number constraints inside the Slice with orientation %s  and index %d exceeds the maximum allowed Of %d ";
+    private static final String invalidNumberFormatDefinition = "Invalid Number Definition inside a Slice with orientation %s and index %d ";
+    private static final String solutionIsNotDefined = "Solution is not defined in the provided xml file";
+    private static final String squareIsNotDefined = "a square is not defined correctly in the provided xml file";
+    private static final String orientationRow = "row";
+    private static final String orientationColumn = "column";
+    private static final String InvalidConstraintsOnSolution = "Solution has a %s Constraint that does not match the constraint defined in the xml file";
+    private static final String invlaidMultiplayersMoves = "Invalid Number Of Moves entered %s";
+    private static final String squareIsDefinedTwice = "Solution square in Row %d and Column %d is defined twice";
+    private static final int minIndexValue = 0;
+    private static final int maxDimension = 100;
+    private static final int minDimension = 10;
+    private static final String NOT_ALL_CONSTRAINTS_ARE_DEFIND = "Not All Constraints(Slices) are Defined";
     private GameDescriptor gameDescriptor;
     private File gameDefinitionsXmlFile;
     private GameType gametype;
@@ -57,6 +61,7 @@ public class GameBoardXmlParser {
     private int columns;
     private int moves;
     private List<Game.Player.Player> players = new ArrayList<>();
+
 
     public int getMoves() {
         return moves;
@@ -101,7 +106,7 @@ public class GameBoardXmlParser {
     }
 
     private void createDefaultPlayer() {
-        players.add(new Game.Player.Player("default Player", PlayerType.Human, 0, new GameBoard(rows, columns)));
+        players.add(new Game.Player.Player(DEFAULT_PLAYER, PlayerType.Human, 0, new GameBoard(rows, columns)));
     }
 
     private void extractMultiPlayersInfo() throws GameDefinitionsXmlParserException {
@@ -128,7 +133,7 @@ public class GameBoardXmlParser {
 
             }
         } catch (NumberFormatException e) {
-            throw new GameDefinitionsXmlParserException(String.format("Invalid Number Of Moves entered: %s", gameDescriptor.getMultiPlayers().getMoves() == null ? "null" : gameDescriptor.getMultiPlayers().getMoves()));
+            throw new GameDefinitionsXmlParserException(String.format(invlaidMultiplayersMoves, gameDescriptor.getMultiPlayers().getMoves() == null ? "null" : gameDescriptor.getMultiPlayers().getMoves()));
         } catch (Exception e) {
             throw new GameDefinitionsXmlParserException(e.getMessage());
         }
@@ -143,6 +148,9 @@ public class GameBoardXmlParser {
                     int row = square.getRow().intValue() - 1;
                     int column = square.getColumn().intValue() - 1;
                     if (isValidRange(row, rows) && isValidRange(column, columns)) {
+                        if (solutionBoard.getBoardSquare(row, column).equals(BoardSquare.Black)) {
+                            throw new GameDefinitionsXmlParserException(String.format(squareIsDefinedTwice, row, column));
+                        }
                         solutionBoard.setBoardSquareAsBlack(row, column);
                     } else {
                         throw new GameDefinitionsXmlParserException(squareIsNotDefined);
@@ -204,6 +212,17 @@ public class GameBoardXmlParser {
             }
         } else {
             throw new GameDefinitionsXmlParserException(invalidSlicesDefinition);
+        }
+        validateThatAllConstraintsAreDefined(isRowDefined);
+        validateThatAllConstraintsAreDefined(isColumnDefined);
+
+    }
+
+    private void validateThatAllConstraintsAreDefined(boolean[] isConstraintsDefined) throws GameDefinitionsXmlParserException {
+        for (boolean IsConstraintDefined : isConstraintsDefined) {
+            if (!IsConstraintDefined) {
+                throw new GameDefinitionsXmlParserException(NOT_ALL_CONSTRAINTS_ARE_DEFIND);
+            }
         }
     }
 

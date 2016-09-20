@@ -105,6 +105,7 @@ public class MainController {
     private final ToggleGroup statusButtons = new ToggleGroup();
     private boolean isGameFinished = false;
     private int currentMoveNumber = 1;
+    private Node boardUI;
 
     public void setPrimaryStage(Stage primaryStage) {
         this.primaryStage = primaryStage;
@@ -174,8 +175,11 @@ public class MainController {
     private void initAndShowBoard() {
         boardController = new BoardController(game);
         boardView.setStyle("-fx-background-color: dimgray");
-        Node board = boardController.getBoardUI(game.getGameBoard());
-        boardView.getChildren().add(board);
+        if (boardView.getChildren().contains(boardUI)) {
+            boardView.getChildren().remove(boardUI);
+        }
+        boardUI = boardController.getBoardUI(game.getGameBoard());
+        boardView.getChildren().add(boardUI);
         boardView.setDisable(true);
     }
 
