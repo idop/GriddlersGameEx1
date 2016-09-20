@@ -312,13 +312,12 @@ public class MainController {
     private void doTurn(PlayerTurn turn) {
         game.doPlayerTurn(turn);
         boardController.redrawBoardUI(game.getGameBoard());
-        //updatePlayerMoveList();
+        updatePlayerMoveList();
         updatePlayer(); //TODO: check why player score is not updated
     }
-    /*
+
     private void updatePlayerMoveList(){
         ObservableList<PlayerTurn> turnList = game.getCurrentPlayer().getUndoList();
-        moveList.getItems().clear();
         moveList.setItems(turnList);
         for (PlayerTurn player: turnList) {
 
@@ -329,7 +328,7 @@ public class MainController {
     private void undoTurn(ActionEvent event){
         //TODO: implement undoTurn()..
     }
-    */
+
 
     private PlayerTurn getPlayerTurn() {
         PlayerTurn turn = new PlayerTurn();

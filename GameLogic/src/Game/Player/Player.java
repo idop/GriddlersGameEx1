@@ -82,7 +82,7 @@ public class Player {
         this.playerType = playerType;
     }
 
-    public ObservableList<PlayerTurn> getUndoList() {return (ObservableList<PlayerTurn>) this.undoList;}
+    public ObservableList<PlayerTurn> getUndoList() {return FXCollections.observableList(this.undoList);}
 
 
     private PlayerTurn revertStep(SolutionBoard solution, List<PlayerTurn> listToRevert, String exceptionMassage) throws PlayerTurnException {
