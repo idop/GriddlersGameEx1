@@ -342,17 +342,30 @@ public class MainController {
     }
 
     private void updatePlayerMoveList(Player player) {
-
         ObservableList<PlayerTurn> turnList = player.getUndoList();
-        if (turnList != null)
+        if (turnList != null) {
             moveList.setItems(turnList);
+        }
+
+        moveList.setCellFactory(lv -> new ListCell<PlayerTurn>() {
+            @Override
+            public void updateItem(PlayerTurn item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                } else {
+                    String text = item.getListViewName();  // get text from item
+                    setText(text);
+                }
+            }
+        });
     }
 
-    private void initMoveList(){
+    private void initMoveList() {
         moveList.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<PlayerTurn>() {
             @Override
             public void changed(ObservableValue<? extends PlayerTurn> observable, PlayerTurn oldValue, PlayerTurn newValue) {
-                if(newValue != null)
+                if (newValue != null)
                     moveDescription.setText(newValue.getTurnString());
                 else
                     moveDescription.setText("");
@@ -372,6 +385,7 @@ public class MainController {
             }
         });
     }
+
     @FXML
     private void undoTurn(ActionEvent event) {
         try {
