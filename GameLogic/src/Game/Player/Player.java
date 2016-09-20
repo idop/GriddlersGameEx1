@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by ido on 18/08/2016.
@@ -20,7 +21,6 @@ public class Player {
     private String name;
     private PlayerType playerType;
     private List<PlayerTurn> undoList;
-    private List<PlayerTurn> redoList;
     private GameBoard gameBoard;
     private boolean playerWon = false;
     private PlayerGameStatistics statistics;
@@ -35,7 +35,6 @@ public class Player {
         this.playerType = playerType;
         this.id = id;
         undoList = new ArrayList<>();
-        redoList = new ArrayList<>();
         statistics = new PlayerGameStatistics();
         this.gameBoard = gameBoard;
         numberOfBoardSquares = gameBoard.getNumberOfSquares();
@@ -82,7 +81,9 @@ public class Player {
         this.playerType = playerType;
     }
 
-    public ObservableList<PlayerTurn> getUndoList() {return FXCollections.observableList(this.undoList);}
+    public ObservableList<PlayerTurn> getUndoList() {
+        return FXCollections.observableList(this.undoList.stream().collect(Collectors.toList()));
+    }
 
 
     private PlayerTurn revertStep(SolutionBoard solution, List<PlayerTurn> listToRevert, String exceptionMassage) throws PlayerTurnException {
@@ -100,13 +101,8 @@ public class Player {
     }
 
     public void undoTurn(SolutionBoard solution) throws PlayerTurnException {
-        redoList.add(revertStep(solution, undoList, undoExceptionMessage));
+        revertStep(solution, undoList, undoExceptionMessage);
         statistics.incNumberOfUndoTurns();
-    }
-
-    public void redoTurn(SolutionBoard solution) throws PlayerTurnException {
-        undoList.add(revertStep(solution, redoList, redoExceptionMessage));
-        statistics.incNumberOfRedoMoves();
     }
 
     public BoardSquare[][] getBoard() {
@@ -115,7 +111,6 @@ public class Player {
 
     public void doTurn(PlayerTurn turn, SolutionBoard solution) {
         undoList.add(doActualTrun(turn, solution));
-        redoList.clear();
         statistics.incNumberOfTurns();
     }
 
@@ -188,5 +183,9 @@ public class Player {
     @Override
     public int hashCode() {
         return id;
+    }
+
+    public int getUndoListSize() {
+        return undoList.size();
     }
 }

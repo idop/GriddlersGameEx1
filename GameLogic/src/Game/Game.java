@@ -28,6 +28,7 @@ public class Game {
     private int maxNumberOfRounds;
 
     public Game(GameBoardXmlParser gameBoardXmlParser) {
+        currentRound = 1;
         gameType = gameBoardXmlParser.getGameType();
         rowConstraints = gameBoardXmlParser.getRowConstraints();
         columnConstraints = gameBoardXmlParser.getColumnConstraints();
@@ -46,6 +47,14 @@ public class Game {
             case DynamicMultiPlayer:
                 break;
         }
+    }
+
+    public int getMaxNumberOfRounds() {
+        return maxNumberOfRounds;
+    }
+
+    public int getCurrentRound() {
+        return currentRound;
     }
 
     public boolean isGameEnded() {
@@ -124,14 +133,6 @@ public class Game {
     public void undoTurn() throws PlayerTurnException {
         players.get(currentPlayerId).undoTurn(solutionBoard);
         setPerfectConstraints();
-        currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
-
-    }
-
-    public void redoTurn() throws PlayerTurnException {
-        players.get(currentPlayerId).redoTurn(solutionBoard);
-        setPerfectConstraints();
-        currentPlayerId = (currentPlayerId + 1) % numberOfPlayers;
     }
 
     public boolean checkIfPlayerWon() {

@@ -8,17 +8,16 @@ import java.util.List;
  */
 public class PlayerTurn {
     private List<GameMove> moves;
-    private String moveDirection;
+
     private String comment;
 
     public PlayerTurn() {
         this.moves = new ArrayList<GameMove>();
     }
 
-    public PlayerTurn(List<GameMove> i_moves, String i_direction)
+    public PlayerTurn(List<GameMove> i_moves)
     {
         this.moves = i_moves;
-        this.moveDirection = i_direction;
     }
 
     public void addGameMove(GameMove move) {
@@ -39,8 +38,8 @@ public class PlayerTurn {
 
     public void printTurn()
     {
-        System.out.printf("| Move direction: %s | Start location - row %d col %d | Move size: %d | Move type: %s%n",
-                this.moveDirection, this.moves.get(0).getRow() + 1, this.moves.get(0).getColumn() + 1,      // fixing numbering of row/col
+        System.out.printf("|  Start location - row %d col %d | Move size: %d | Move type: %s%n",
+                this.moves.get(0).getRow() + 1, this.moves.get(0).getColumn() + 1,      // fixing numbering of row/col
                 this.moves.size(), this.moves.get(0).getNewBoardSquare().name());
         System.out.println("Comment for turn left by player: " + comment);
         System.out.println();

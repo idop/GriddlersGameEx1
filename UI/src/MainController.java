@@ -6,7 +6,6 @@ import Game.Player.PlayerType;
 import Game.PlayerTurn;
 import GameXmlParser.GameBoardXmlParser;
 import GameXmlParser.GameDefinitionsXmlParserException;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -29,6 +28,7 @@ import java.util.Iterator;
 public class MainController {
 
     private static final int MAX_NUMBER_OF_TURNS_PER_ROUND = 2;
+    private static final String STRING_EMPTY = "";
     @FXML
     private VBox root;
 
@@ -84,9 +84,6 @@ public class MainController {
     private Button endRoundBtn;
 
     @FXML
-    private Label currentMoveLabel;
-
-    @FXML
     private Label ttlMovesLabel;
 
     @FXML
@@ -115,22 +112,21 @@ public class MainController {
 
     @FXML
     private void initialize() {
+        currentMoveNumber = 1;
         startGameBtn.setDisable(true);
         disablePlayerControls();
+        playersTableViewList.setDisable(true);
         statusBlackRBtn.setToggleGroup(statusButtons);
         statusBlackRBtn.requestFocus();
         statusEmptyRBtn.setToggleGroup(statusButtons);
         statusUndecidedRBtn.setToggleGroup(statusButtons);
-        statusButtons.selectedToggleProperty().addListener(new ChangeListener<Toggle>() {
-            @Override
-            public void changed(ObservableValue<? extends Toggle> observable, Toggle oldValue, Toggle newValue) {
-                if (statusBlackRBtn.isSelected())
-                    selectedStatusForMove = BoardSquare.Black;
-                else if (statusEmptyRBtn.isSelected())
-                    selectedStatusForMove = BoardSquare.White;
-                else
-                    selectedStatusForMove = BoardSquare.Empty;
-            }
+        statusButtons.selectedToggleProperty().addListener((observable, oldValue, newValue) -> {
+            if (statusBlackRBtn.isSelected())
+                selectedStatusForMove = BoardSquare.Black;
+            else if (statusEmptyRBtn.isSelected())
+                selectedStatusForMove = BoardSquare.White;
+            else
+                selectedStatusForMove = BoardSquare.Empty;
         });
     }
 
@@ -144,7 +140,6 @@ public class MainController {
         playerClearSelectionBtn.setDisable(true);
         playerMakeMoveBtn.setDisable(true);
         playerUndoLastBtn.setDisable(true);
-        playersTableViewList.setDisable(true);
     }
 
     @FXML
@@ -201,7 +196,7 @@ public class MainController {
         statusUndecidedRBtn.setDisable(false);
         playerClearSelectionBtn.setDisable(false);
         playerMakeMoveBtn.setDisable(false);
-        updatePlayer();
+        updatePlayer(game.getCurrentPlayer());
         selectedSquares = boardController.getSelectedSquares();
         selectedSquares.addListener(new ListChangeListener<BoardController.Square>() {
             @Override
@@ -258,12 +253,12 @@ public class MainController {
                 if (selectedPlayer.getPlayerType().equals(PlayerType.Computer)) {
                     boardController.redrawBoardUI(selectedPlayer.getGameBoard());
                     boardView.setDisable(true);
-                    updatePlayerMoveList(selectedPlayer);
+                    updatePlayer(selectedPlayer);
                 } else {
                     if (game.getCurrentPlayer().equals(selectedPlayer)) {
                         boardController.redrawBoardUI(selectedPlayer.getGameBoard());
                         boardView.setDisable(false);
-                        updatePlayerMoveList(selectedPlayer);
+                        updatePlayer(selectedPlayer);
                     } else {
                         Alert alert = new Alert(AlertType.ERROR);
                         alert.setTitle("Error Dialog");
@@ -275,14 +270,18 @@ public class MainController {
             } else {
                 boardController.redrawBoardUI(selectedPlayer.getGameBoard());
                 boardView.setDisable(true);
-                updatePlayerMoveList(selectedPlayer);
+                updatePlayer(selectedPlayer);
             }
         }
     }
 
-    public void updatePlayer() {
-        currentPlayerScore.setText(game.getCurrentPlayer().getScoreProperty().toString());
-        currentPlayerName.setText(game.getCurrentPlayer().getName());
+    public void updatePlayer(Player player) {
+        currentPlayerScore.setText(player.getScoreProperty().toString());
+        currentPlayerName.setText(player.getName());
+        ttlMovesLabel.setText(String.format("Round: %d/%d", game.getCurrentRound(), game.getMaxNumberOfRounds()));
+        currentTurnLabel.setText(Integer.toString(currentMoveNumber));
+        updatePlayerMoveList(player);
+
     }
 
     @FXML
@@ -312,10 +311,13 @@ public class MainController {
         if (game.isGameEnded()) {
             endCurrentGame();
         } else {
-            boardController.redrawBoardUI(game.getGameBoard());
-            updatePlayer();
-            currentMoveNumber = 1;
-            updatePlayerMoveList(game.getCurrentPlayer());
+            if (game.getCurrentPlayer().getPlayerType().equals(PlayerType.Human)) {
+                boardController.redrawBoardUI(game.getGameBoard());
+                currentMoveNumber = 1;
+                updatePlayer(game.getCurrentPlayer());
+            } else {
+                makeComputerTurn();
+            }
         }
 
     }
@@ -328,24 +330,22 @@ public class MainController {
     private void makeHumanPlayerMove() {
         PlayerTurn turn = getPlayerTurn();
         doTurn(turn);
-        if (currentMoveNumber == MAX_NUMBER_OF_TURNS_PER_ROUND) {
-            playerMakeMoveBtn.setDisable(true);
-        } else {
-            currentMoveNumber++;
-        }
         playerUndoLastBtn.setDisable(false);
+        if (currentMoveNumber > MAX_NUMBER_OF_TURNS_PER_ROUND) {
+            playerMakeMoveBtn.setDisable(true);
+        }
+
 
     }
 
     private void doTurn(PlayerTurn turn) {
         game.doPlayerTurn(turn);
+        currentMoveNumber++;
         boardController.redrawBoardUI(game.getGameBoard());
-        updatePlayerMoveList(game.getCurrentPlayer());
-        updatePlayer(); //TODO: check why player score is not updated
+        updatePlayer(game.getCurrentPlayer());
     }
 
     private void updatePlayerMoveList(Player player) {
-        moveList.getItems().clear();
         ObservableList<PlayerTurn> turnList = player.getUndoList();
         moveList.setItems(turnList);
 
@@ -355,8 +355,10 @@ public class MainController {
     private void undoTurn(ActionEvent event) {
         try {
             game.undoTurn();
-            updatePlayerMoveList(game.getCurrentPlayer());
-            currentMoveNumber = Math.max(0, currentMoveNumber - 1);
+            playerMakeMoveBtn.setDisable(false);
+            boardController.redrawBoardUI(game.getGameBoard());
+            currentMoveNumber = (currentMoveNumber - 1) < 0 ? 0 : currentMoveNumber - 1;
+            updatePlayer(game.getCurrentPlayer());
             if (game.getCurrentPlayer().getUndoList().size() == 0) {
                 playerUndoLastBtn.setDisable(true);
             }
@@ -385,6 +387,11 @@ public class MainController {
         disablePlayerControls();
         boardView.setDisable(true);
         loadPuzzleBtn.setDisable(false);
+        Alert alert = new Alert(AlertType.INFORMATION);
+        alert.setTitle("Game Ended");
+        alert.setHeaderText("Game Ended");
+        alert.setContentText("Game Ended");
+        alert.showAndWait();
     }
 
 }
